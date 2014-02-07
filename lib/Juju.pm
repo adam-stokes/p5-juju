@@ -1,5 +1,5 @@
 package Juju;
-# ABSTRACT: Juju library for perl
+# ABSTRACT: Perl bindings for http://juju.ubuntu.com/
 
 use strict;
 use warnings;
@@ -15,9 +15,8 @@ has conn => (
 
 1;
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
-    use Juju;
-    my $juju = Juju->new(user => 'user-admin' password => 'fds9fdsa8f');
+Perl bindings for Juju. See L<Juju::Manual> for more information.
 
 =cut
