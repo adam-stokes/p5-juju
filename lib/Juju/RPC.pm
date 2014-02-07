@@ -47,6 +47,16 @@ has 'is_connected' => (
     default => 0
 );
 
+=attr conn
+
+The websocket connection once connected.
+
+=cut
+has 'conn' => (
+    is      => 'rw',
+    lazy    => 1
+);
+
 =method create_connection
 
 Initiate a websocket connection
@@ -56,6 +66,7 @@ sub create_connection {
     my $self = shift;
     die "Already Connected."
       if $self->is_connected and $self->is_authenticated;
+    $self->conn('connected.');
 }
 
 =method call
@@ -68,7 +79,7 @@ C<params> - Hash of parameters needed to query Juju API
 
 =head3 Returns
 
-C<result> - Hash of results
+C<hash> of results
 
 =cut
 sub call {

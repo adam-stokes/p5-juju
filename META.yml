@@ -3,6 +3,7 @@ abstract: 'Perl bindings for http://juju.ubuntu.com/'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
+  IO::Socket::SSL: '0'
   Mojolicious: '0'
   Test::Mojo: '0'
   Test::More: '0'

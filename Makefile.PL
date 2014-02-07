@@ -27,6 +27,7 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
+    "IO::Socket::SSL" => 0,
     "Mojolicious" => 0,
     "Test::Mojo" => 0,
     "Test::More" => 0,
@@ -40,6 +41,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "IO::Socket::SSL" => 0,
   "Mojolicious" => 0,
   "Moose" => 0,
   "Moose::Autobox" => 0,

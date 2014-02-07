@@ -4,6 +4,7 @@ requires "strict" => "0";
 requires "warnings" => "0";
 
 on 'test' => sub {
+  requires "IO::Socket::SSL" => "0";
   requires "Mojolicious" => "0";
   requires "Test::Mojo" => "0";
   requires "Test::More" => "0";
