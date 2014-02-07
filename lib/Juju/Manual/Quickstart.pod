@@ -1,0 +1,39 @@
+package Juju::Manual::Quickstart;
+
+=head1 INSTALL
+
+Installation is handled through cpanm and you can point directly to
+the github repository:
+
+    cpanm git@github.com:battlemidget/perl-juju.git
+
+=head1 INTRO
+
+The library exposes juju low level rpc interface via a secure
+websocket. The credentials required are found in your
+B<~/.juju/environments/'env'.jenv>. If that directory/file does not
+exist you'll want to make sure you've bootstrapped first:
+
+    juju bootstrap --upload-tools
+
+See more information on the workings of juju at
+L<http://juju.ubuntu.com>
+
+=head1 USING
+
+To get started initialize the Juju class:
+
+    use Juju;
+
+    my $juju = Juju->new(username => 'user-admin', password => '8fdsaf0fda');
+
+The username is a tag utilized by Juju to define the username for
+authentication.  The password is found in the
+B<~/.juju/environments/'env'.jenv> under C<admin-secret>.
+
+There is a B<default port (17070)> for accessing the machine
+resources.
+
+=cut
+
+1;
