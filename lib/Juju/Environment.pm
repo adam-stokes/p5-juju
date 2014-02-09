@@ -36,9 +36,10 @@ under 'admin-secret:'
 
 =cut
 has 'password' => (
-    is   => 'rw',
-    isa  => 'Str',
-    lazy => 1
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => 'hohoho'
 );
 
 sub BUILD {
@@ -60,7 +61,7 @@ sub login {
     my ($self, $password, $username) = @_;
 
     # Store for additional authenticated connections
-    $self->username($user);
+    $self->username($username);
     $self->password($password);
     $self->call(
         {   "Type"    => "Admin",

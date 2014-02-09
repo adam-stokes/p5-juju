@@ -1,7 +1,7 @@
+requires "DDP" => "0";
+requires "Mojo::Transaction::WebSocket" => "0";
 requires "Moose" => "0";
 requires "Moose::Autobox" => "0";
-requires "strict" => "0";
-requires "warnings" => "0";
 
 on 'test' => sub {
   requires "IO::Socket::SSL" => "0";

@@ -18,8 +18,8 @@ meta-spec:
   version: '1.4'
 name: Juju
 requires:
+  DDP: '0'
+  Mojo::Transaction::WebSocket: '0'
   Moose: '0'
   Moose::Autobox: '0'
-  strict: '0'
-  warnings: '0'
 version: '0.2'

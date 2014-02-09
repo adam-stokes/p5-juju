@@ -10,6 +10,8 @@ utilized by the exposed API.
 
 use Moose;
 use Moose::Autobox;
+use Mojo::Transaction::WebSocket;
+use DDP;
 
 =attr request_id
 
@@ -54,7 +56,9 @@ The websocket connection once connected.
 =cut
 has 'conn' => (
     is      => 'rw',
-    lazy    => 1
+    isa     => 'Str',
+    lazy    => 1,
+    default => 'Test'
 );
 
 =method create_connection
@@ -66,7 +70,7 @@ sub create_connection {
     my $self = shift;
     die "Already Connected."
       if $self->is_connected and $self->is_authenticated;
-    $self->conn('connected.');
+    return Mojo::Transaction::WebSocket->new;
 }
 
 =method call
