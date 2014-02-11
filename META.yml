@@ -19,7 +19,8 @@ meta-spec:
 name: Juju
 requires:
   DDP: '0'
-  Mojo::Transaction::WebSocket: '0'
-  Moose: '0'
-  Moose::Autobox: '0'
+  Mojo::Base: '0'
+  Mojo::IOLoop: '0'
+  Mojo::JSON: '0'
+  Mojo::UserAgent: '0'
 version: '0.2'

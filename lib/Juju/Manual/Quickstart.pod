@@ -9,7 +9,7 @@ the github repository:
 
 =head1 INTRO
 
-The library exposes juju low level rpc interface via a secure
+The library exposes juju rpc interface via a secure
 websocket. The credentials required are found in your
 B<~/.juju/environments/'env'.jenv>. If that directory/file does not
 exist you'll want to make sure you've bootstrapped first:
@@ -25,14 +25,19 @@ To get started initialize the Juju class:
 
     use Juju;
 
-    my $juju = Juju->new(username => 'user-admin', password => '8fdsaf0fda');
+    # Open connection over the websocket protocol
+    my $juju = Juju->new(endpoint => 'wss://192.168.122.16:17070', password => '8fdsaf0fda');
+    $juju->login;
+    my $juju_info = $juju->info;
+    print $juju_info->{UUID};
 
-The username is a tag utilized by Juju to define the username for
-authentication.  The password is found in the
-B<~/.juju/environments/'env'.jenv> under C<admin-secret>.
+    # Close the connection
+    $juju->close;
 
-There is a B<default port (17070)> for accessing the machine
-resources.
+The password is found in the B<~/.juju/environments/'env'.jenv> under
+C<admin-secret>.
+
+There is a B<port (17070)> for accessing the machine resources.
 
 =cut
 

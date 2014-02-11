@@ -1,13 +1,15 @@
 package Juju;
 # ABSTRACT: Perl bindings for http://juju.ubuntu.com/
 
-use Moose;
-use Moose::Autobox;
-
 1;
 
 =head1 DESCRIPTION
 
 Perl bindings for Juju. See L<Juju::Manual> for more information.
+
+=head1 NOTICE
+
+Code is B<alpha quality> and subject to change. API breakage will occur
+until this project reaches 1.x version.
 
 =cut

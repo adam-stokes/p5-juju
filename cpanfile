@@ -1,7 +1,8 @@
 requires "DDP" => "0";
-requires "Mojo::Transaction::WebSocket" => "0";
-requires "Moose" => "0";
-requires "Moose::Autobox" => "0";
+requires "Mojo::Base" => "0";
+requires "Mojo::IOLoop" => "0";
+requires "Mojo::JSON" => "0";
+requires "Mojo::UserAgent" => "0";
 
 on 'test' => sub {
   requires "IO::Socket::SSL" => "0";

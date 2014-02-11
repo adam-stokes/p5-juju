@@ -8,58 +8,53 @@ utilized by the exposed API.
 
 =cut
 
-use Moose;
-use Moose::Autobox;
-use Mojo::Transaction::WebSocket;
+use Mojo::Base -base;
+use Mojo::IOLoop;
+use Mojo::UserAgent;
+use Mojo::JSON;
 use DDP;
+
+=attr json
+
+JSON attribute
+
+=cut
+has 'json' => sub { my $self = shift; return Mojo::JSON->new };
+
+=attr ua
+
+UserAgent attribute
+
+=cut
+has 'ua' => sub { my $self = shift; return Mojo::UserAgent->new };
+
+=attr conn
+
+The websocket connection
+
+=cut
+has 'conn' => '';
+
+=attr counter
+
+Request counter
+
+=cut
+has 'counter' => 0;
 
 =attr request_id
 
 An incremented ID based on how many requests performed on the connection.
 
 =cut
-has 'request_id' => (
-    is      => 'rw',
-    isa     => 'Int',
-    lazy    => 1,
-    default => 0
-);
-
-=attr is_authenticated
-
-Stores if user has authenticated with juju api server
-
-=cut
-has 'is_authenticated' => (
-    is      => 'rw',
-    isa     => 'Bool',
-    lazy    => 1,
-    default => 0
-);
+has 'request_id' => 0;
 
 =attr is_connected
 
 Check if a websocket connection exists
 
 =cut
-has 'is_connected' => (
-    is      => 'rw',
-    isa     => 'Bool',
-    lazy    => 1,
-    default => 0
-);
-
-=attr conn
-
-The websocket connection once connected.
-
-=cut
-has 'conn' => (
-    is      => 'rw',
-    isa     => 'Str',
-    lazy    => 1,
-    default => 'Test'
-);
+has 'is_connected' => 0;
 
 =method create_connection
 
@@ -70,7 +65,26 @@ sub create_connection {
     my $self = shift;
     die "Already Connected."
       if $self->is_connected and $self->is_authenticated;
-    return Mojo::Transaction::WebSocket->new;
+    $self->conn(
+        $self->ua->websocket(
+            $self->endpoint => sub {
+                my ($ua, $tx) = @_;
+                p $tx;
+                return unless $tx->is_websocket;
+            }
+        )
+    );
+    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+}
+
+=method close
+
+Closes websocket connection
+
+=cut
+sub close {
+    my $self = shift;
+    $self->conn->finish;
 }
 
 =method call
@@ -88,10 +102,15 @@ C<hash> of results
 =cut
 sub call {
     my ($self, $params) = @_;
-    $params->{RequestId} = $self->request_id;
-    $self->request_id += 1;
+    $params->{RequestId} += 1;
+    $self->request_id($params->{RequestId});
+    $self->conn->on(
+        message => sub {
+            my ($ws, $msg) = @_;
+            return $self->json->decode($msg);
+        }
+    );
+    $self->conn->send({json => $params});
 }
 
-
-__PACKAGE__->meta->make_immutable;
 1;
