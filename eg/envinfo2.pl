@@ -3,41 +3,42 @@ use strict;
 use warnings;
 use Mojo::Base -base;
 use Mojo::UserAgent;
+use Mojo::Transaction::WebSocket;
 use Mojo::JSON qw(j);
+use Data::Dumper;
 
-my $params = j(
-    {   'Type'      => 'Admin',
-        'Request'   => 'Login',
-        'RequestId' => 1,
-        'Params'    => {
-            'AuthTag'  => 'user-admin',
-            'Password' => '211fdd69b8942c10cef6cfb8a4748fa4'
-        }
+my $host = '10.0.3.1';
+my $port = '17070';
+$Data::Dumper::Indent = 1;
+
+my $params = {
+    'Type'      => 'Admin',
+    'Request'   => 'Login',
+    'RequestId' => 5000,
+    'Params'    => {
+        'AuthTag'  => 'user-admin',
+        'Password' => '211fdd69b8942c10cef6cfb8a4748fa4'
     }
-);
+};
 
 my $ua = Mojo::UserAgent->new;
-$ua->websocket(
-    'wss://10.0.3.1:17070' => sub {
+my $tx = $ua->build_websocket_tx('wss://10.0.3.1:17070' => json => $params);
+$ua->start(
+    $tx => sub {
         my ($ua, $tx) = @_;
-        say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
-        $tx->on(
-            finish => sub {
-                my ($tx, $code, $reason) = @_;
-                say "WebSocket closed with status $code.";
-            }
-        );
+        print Dumper($tx);
         $tx->on(
             message => sub {
                 my ($tx, $msg) = @_;
-                say "WebSocket message: $msg";
+                print Dumper($msg);
                 $tx->finish;
             }
         );
-        $tx->send($params);
+        $tx->send({json => $params});
+        say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
     }
 );
-Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+Mojo::IOLoop->start;
 
 __END__
 
