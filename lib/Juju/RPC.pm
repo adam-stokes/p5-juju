@@ -9,24 +9,40 @@ utilized by the exposed API.
 =cut
 
 use Mojo::Base -base;
-use Mojo::IOLoop;
 use Mojo::UserAgent;
+use Mojo::Transaction::WebSocket;
 use Mojo::JSON;
+use Mojo::URL;
+use Mojo::Log;
 use DDP;
+
+=attr url
+
+URL
+
+=cut
+has 'url' => sub { Mojo::URL->new };
+
+=attr log
+
+LOGGER
+
+=cut
+has 'log' => sub { Mojo::Log->new };
 
 =attr json
 
 JSON attribute
 
 =cut
-has 'json' => sub { my $self = shift; return Mojo::JSON->new };
+has 'json' => sub { Mojo::JSON->new };
 
 =attr ua
 
 UserAgent attribute
 
 =cut
-has 'ua' => sub { my $self = shift; return Mojo::UserAgent->new };
+has 'ua' => sub { Mojo::UserAgent->new };
 
 =attr conn
 
@@ -58,23 +74,17 @@ has 'is_connected' => 0;
 
 =method create_connection
 
-Initiate a websocket connection
+Initiate a websocket connection and stores itself in C<conn> attribute.
 
 =cut
 sub create_connection {
     my $self = shift;
+    $self->log->debug("Creating websocket connection.");
+    my $uri = $self->url->parse($self->endpoint);
+
     die "Already Connected."
       if $self->is_connected and $self->is_authenticated;
-    $self->conn(
-        $self->ua->websocket(
-            $self->endpoint => sub {
-                my ($ua, $tx) = @_;
-                p $tx;
-                return unless $tx->is_websocket;
-            }
-        )
-    );
-    Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+    $self->is_connected(1);
 }
 
 =method close
@@ -84,6 +94,13 @@ Closes websocket connection
 =cut
 sub close {
     my $self = shift;
+    $self->log->debug("Closing the connection");
+    $self->conn->on(
+        finish => sub {
+            my ($ws, $code, $reason) = @_;
+            $self->log->debug("Closed: $reason ($code)");
+        }
+    );
     $self->conn->finish;
 }
 
@@ -102,14 +119,9 @@ C<hash> of results
 =cut
 sub call {
     my ($self, $params) = @_;
-    $params->{RequestId} += 1;
-    $self->request_id($params->{RequestId});
-    $self->conn->on(
-        message => sub {
-            my ($ws, $msg) = @_;
-            return $self->json->decode($msg);
-        }
-    );
+    $self->log->debug('Performing RPC Call');
+    $self->request_id($self->request_id + 1);
+    $params->{RequestId} = $self->request_id;
     $self->conn->send({json => $params});
 }
 
