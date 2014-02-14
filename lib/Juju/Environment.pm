@@ -3,8 +3,6 @@ package Juju::Environment;
 
 use Moo;
 extends 'Juju::RPC';
-use Data::Dumper;
-use DDP;
 
 =attr endpoint
 
@@ -163,9 +161,13 @@ Allocate new machine from the iaas provider (i.e. MAAS)
 =head3 Takes
 
 C<series> - OS series (i.e precise)
-C<constraints - machine constraints
+
+C<constraints> - machine constraints
+
 C<machine_spec> - not sure yet..
+
 C<parent_id> - not sure yet..
+
 C<container_type> - uh..
 
 Note: Not quite right as I've no idea wtf its doing yet, need to read

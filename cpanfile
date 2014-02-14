@@ -1,7 +1,5 @@
 requires "AnyEvent" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
-requires "DDP" => "0";
-requires "Data::Dumper" => "0";
 requires "JSON" => "0";
 requires "Moo" => "0";
 requires "namespace::clean" => "0";

@@ -1,7 +1,5 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-
-0.2     2014-02-14
-
-0.1     2014-02-07
+	- Adding API calls
+	- Finished non-blocking code

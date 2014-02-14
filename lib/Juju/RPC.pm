@@ -13,22 +13,6 @@ use namespace::clean;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
 use JSON;
-use Data::Dumper;
-use DDP;
-
-=attr cv
-
-AE::CondVar
-
-=cut
-has 'cv' => (is => 'ro', default => sub { AnyEvent->condvar });
-
-=attr cb
-
-Current callback for event
-
-=cut
-has 'cb' => (is => 'rw');
 
 =attr conn
 
