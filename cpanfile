@@ -1,10 +1,11 @@
+requires "AnyEvent" => "0";
+requires "AnyEvent::Strict" => "0";
+requires "AnyEvent::WebSocket::Client" => "0";
 requires "DDP" => "0";
-requires "Mojo::Base" => "0";
-requires "Mojo::JSON" => "0";
-requires "Mojo::Log" => "0";
-requires "Mojo::Transaction::WebSocket" => "0";
-requires "Mojo::URL" => "0";
-requires "Mojo::UserAgent" => "0";
+requires "Data::Dumper" => "0";
+requires "JSON" => "0";
+requires "Moo" => "0";
+requires "namespace::clean" => "0";
 
 on 'test' => sub {
   requires "IO::Socket::SSL" => "0";

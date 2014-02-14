@@ -21,13 +21,14 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Juju",
   "PREREQ_PM" => {
+    "AnyEvent" => 0,
+    "AnyEvent::Strict" => 0,
+    "AnyEvent::WebSocket::Client" => 0,
     "DDP" => 0,
-    "Mojo::Base" => 0,
-    "Mojo::JSON" => 0,
-    "Mojo::Log" => 0,
-    "Mojo::Transaction::WebSocket" => 0,
-    "Mojo::URL" => 0,
-    "Mojo::UserAgent" => 0
+    "Data::Dumper" => 0,
+    "JSON" => 0,
+    "Moo" => 0,
+    "namespace::clean" => 0
   },
   "TEST_REQUIRES" => {
     "IO::Socket::SSL" => 0,
@@ -44,18 +45,19 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "AnyEvent" => 0,
+  "AnyEvent::Strict" => 0,
+  "AnyEvent::WebSocket::Client" => 0,
   "DDP" => 0,
+  "Data::Dumper" => 0,
   "IO::Socket::SSL" => 0,
-  "Mojo::Base" => 0,
-  "Mojo::JSON" => 0,
-  "Mojo::Log" => 0,
-  "Mojo::Transaction::WebSocket" => 0,
-  "Mojo::URL" => 0,
-  "Mojo::UserAgent" => 0,
+  "JSON" => 0,
   "Mojolicious" => 0,
+  "Moo" => 0,
   "Test::Mojo" => 0,
   "Test::More" => 0,
-  "Test::NoTabs" => 0
+  "Test::NoTabs" => 0,
+  "namespace::clean" => 0
 );
 
 

@@ -1,21 +1,23 @@
 package Juju::Environment;
 # ABSTRACT: Exposed juju api environment
 
-use Mojo::Base 'Juju::RPC';
+use Moo;
+extends 'Juju::RPC';
+use Data::Dumper;
 
 =attr endpoint
 
 Websocket address
 
 =cut
-has 'endpoint' => 'wss://localhost:17070';
+has 'endpoint' => (is => 'ro', default => sub { 'wss://localhost:17070' });
 
 =attr username
 
 Juju admin user, this is a tag and should not need changing from the default.
 
 =cut
-has 'username' => 'user-admin';
+has 'username' => (is => 'ro', default => 'user-admin');
 
 =attr password
 
@@ -23,14 +25,14 @@ Password of juju administrator, found in your environments configuration
 under 'admin-secret:'
 
 =cut
-has 'password' => '';
+has 'password' => (is => 'rw');
 
 =attr is_authenticated
 
 Stores if user has authenticated with juju api server
 
 =cut
-has 'is_authenticated' => 0;
+has 'is_authenticated' => (is => 'rw', default => 0);
 
 =method login
 
@@ -54,10 +56,13 @@ sub login {
                     "AuthTag"  => $self->username,
                     "Password" => $self->password
                 }
+            },
+            sub {
+                $self->is_authenticated(1);
             }
         );
     }
-    $self->is_authenticated(1);
+    #sleep(1);
 }
 
 =method info
@@ -71,7 +76,91 @@ Juju environment state
 =cut
 sub info {
     my $self = shift;
-    return $self->call({"Type" => "Client", "Request" => "EnvironmentInfo"});
+    $self->call(
+        {"Type" => "Client", "Request" => "EnvironmentInfo"},
+        sub {
+            my $res = shift;
+            print Dumper($res);
+        }
+    );
+}
+
+=method add_charm
+
+Add charm
+
+=cut
+sub add_charm {
+    my ($self, $charm_url) = @_;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "AddCharm",
+            "Params"  => {"URL" => $charm_url}
+        }
+    );
+}
+
+=method get_charm
+
+Get charm
+
+=cut
+sub get_charm {
+    my ($self, $charm_url) = @_;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "CharmInfo",
+            "Params"  => {"CharmURL" => $charm_url}
+        }
+    );
+}
+
+=method get_env_constraints
+
+=cut
+sub get_env_constraints {
+    my $self = shift;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "GetEnvironmentConstraints"
+        }
+    );
+}
+
+=method set_env_constraints
+
+=cut
+sub set_env_constraints {
+    my ($self, $constraints) = @_;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "SetEnvironmentConstraints",
+            "Params"  => $constraints
+        }
+    );
+}
+
+=method get_env_config
+
+=cut
+sub get_env_config {
+  my $self = shift;
+        $self->call({
+            "Type"=> "Client",
+            "Request"=> "EnvironmentGet"});
+}
+
+=method set_env_config
+
+=cut
+sub set_env_config {
+    my ($self, $config) = @_;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "EnvironmentSet",
+            "Params"  => {"Config" => $config}
+        }
+    );
 }
 
 1;

@@ -5,7 +5,9 @@ use Mojo::Base -base;
 use Mojo::UserAgent;
 use Mojo::Transaction::WebSocket;
 use Mojo::JSON qw(j);
+use IO::Socket::SSL;
 use Data::Dumper;
+BEGIN { $ENV{MOJO_NO_TLS} = 1 }
 
 my $host = '10.0.3.1';
 my $port = '17070';
@@ -22,11 +24,12 @@ my $params = {
 };
 
 my $ua = Mojo::UserAgent->new;
-my $tx = $ua->build_websocket_tx('wss://10.0.3.1:17070' => json => $params);
-$ua->start(
-    $tx => sub {
+$ua->local_address('127.0.0.1');
+$ua->websocket(
+    'wss://10.0.3.1:17070/' => sub {
         my ($ua, $tx) = @_;
         print Dumper($tx);
+        say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
         $tx->on(
             message => sub {
                 my ($tx, $msg) = @_;
@@ -35,7 +38,6 @@ $ua->start(
             }
         );
         $tx->send({json => $params});
-        say 'WebSocket handshake failed!' and return unless $tx->is_websocket;
     }
 );
 Mojo::IOLoop->start;

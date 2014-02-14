@@ -8,84 +8,77 @@ utilized by the exposed API.
 
 =cut
 
-use Mojo::Base -base;
-use Mojo::UserAgent;
-use Mojo::Transaction::WebSocket;
-use Mojo::JSON;
-use Mojo::URL;
-use Mojo::Log;
+use Moo;
+use namespace::clean;
+use AnyEvent;
+use AnyEvent::Strict;
+use AnyEvent::WebSocket::Client;
+use JSON;
+use Data::Dumper;
 use DDP;
-
-=attr url
-
-URL
-
-=cut
-has 'url' => sub { Mojo::URL->new };
-
-=attr log
-
-LOGGER
-
-=cut
-has 'log' => sub { Mojo::Log->new };
-
-=attr json
-
-JSON attribute
-
-=cut
-has 'json' => sub { Mojo::JSON->new };
-
-=attr ua
-
-UserAgent attribute
-
-=cut
-has 'ua' => sub { Mojo::UserAgent->new };
-
-=attr conn
-
-The websocket connection
-
-=cut
-has 'conn' => '';
 
 =attr counter
 
 Request counter
 
 =cut
-has 'counter' => 0;
+has 'counter' => (is => 'rw', default => 0);
 
 =attr request_id
 
 An incremented ID based on how many requests performed on the connection.
 
 =cut
-has 'request_id' => 0;
+has 'request_id' => (is => 'rw', default => 0);
 
 =attr is_connected
 
 Check if a websocket connection exists
 
 =cut
-has 'is_connected' => 0;
+has 'is_connected' => (is => 'rw', default => 0);
 
-=method create_connection
+=attr cv
+
+Condvar
+
+=cut
+has 'cv' => (is => 'ro', default => sub { AnyEvent->condvar });
+
+=attr env
 
 Initiate a websocket connection and stores itself in C<conn> attribute.
 
 =cut
-sub create_connection {
-    my $self = shift;
-    $self->log->debug("Creating websocket connection.");
-    my $uri = $self->url->parse($self->endpoint);
+has 'env' => (
+    is      => 'ro',
+    lazy    => '1',
+    default => sub {
+        my $self = shift;
+        die "Already Connected."
+          if $self->is_connected and $self->is_authenticated;
+        my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
+        $self->cv;
+        my $conn = $client->connect($self->endpoint)->recv;
+        $conn->on(
+            each_message => sub {
+                my ($connection, $message) = @_;
+                my $msg = $message->decoded_body;
+                print Dumper(decode_json($msg->{Response}));
+            }
+        );
+        $conn->on(
+            finish => sub {
+                $self->cv->send;
+            }
+        );
 
-    die "Already Connected."
-      if $self->is_connected and $self->is_authenticated;
-    $self->is_connected(1);
-}
+        # Store connection
+        $self->is_connected(1);
+        return $conn;
+    }
+);
+
 
 =method close
 
@@ -94,19 +87,13 @@ Closes websocket connection
 =cut
 sub close {
     my $self = shift;
-    $self->log->debug("Closing the connection");
-    $self->conn->on(
-        finish => sub {
-            my ($ws, $code, $reason) = @_;
-            $self->log->debug("Closed: $reason ($code)");
-        }
-    );
-    $self->conn->finish;
+    $self->env->close;
+    $self->cv->recv;
 }
 
 =method call
 
-Performs RPC
+Sends event to juju api server
 
 =head3 Takes
 
@@ -114,15 +101,14 @@ C<params> - Hash of parameters needed to query Juju API
 
 =head3 Returns
 
-C<hash> of results
+Result of RPC Response
 
 =cut
 sub call {
-    my ($self, $params) = @_;
-    $self->log->debug('Performing RPC Call');
+    my ($self, $params, $cb) = @_;
     $self->request_id($self->request_id + 1);
     $params->{RequestId} = $self->request_id;
-    $self->conn->send({json => $params});
+    $self->env->send(encode_json($params));
 }
 
 1;
