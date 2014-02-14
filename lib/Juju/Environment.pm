@@ -46,8 +46,15 @@ C<password> - Password of Juju API Server
 sub login {
     my ($self, $password) = @_;
 
+    # Perform initial connection and send a ping to server
+    if(!$self->is_connected) {
+      $self->_create_connection;
+    }
+
     # Store for additional authenticated connections
     $self->password($password);
+
+    # Authenticate ourselves.
     if (!$self->is_authenticated) {
         $self->call(
             {   "Type"    => "Admin",
@@ -62,7 +69,6 @@ sub login {
             }
         );
     }
-    #sleep(1);
 }
 
 =method info

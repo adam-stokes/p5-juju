@@ -17,12 +17,19 @@ use JSON;
 use Data::Dumper;
 use DDP;
 
-=attr counter
+=attr cv
 
-Request counter
+AE::CondVar
 
 =cut
-has 'counter' => (is => 'rw', default => 0);
+has 'cv' => (is => 'ro', default => sub { AnyEvent->condvar });
+
+=attr conn
+
+Connection object
+
+=cut
+has 'conn' => (is => 'rw');
 
 =attr request_id
 
@@ -38,47 +45,33 @@ Check if a websocket connection exists
 =cut
 has 'is_connected' => (is => 'rw', default => 0);
 
-=attr cv
-
-Condvar
-
-=cut
-has 'cv' => (is => 'ro', default => sub { AnyEvent->condvar });
-
-=attr env
+=method _creation_connection
 
 Initiate a websocket connection and stores itself in C<conn> attribute.
 
 =cut
-has 'env' => (
-    is      => 'ro',
-    lazy    => '1',
-    default => sub {
-        my $self = shift;
-        die "Already Connected."
-          if $self->is_connected and $self->is_authenticated;
-        my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
-        $self->cv;
-        my $conn = $client->connect($self->endpoint)->recv;
-        $conn->on(
-            each_message => sub {
-                my ($connection, $message) = @_;
-                my $msg = $message->decoded_body;
-                print Dumper(decode_json($msg->{Response}));
-            }
-        );
-        $conn->on(
-            finish => sub {
-                $self->cv->send;
-            }
-        );
-
-        # Store connection
-        $self->is_connected(1);
-        return $conn;
-    }
-);
-
+sub _create_connection {
+    my $self = shift;
+    die "Already Connected."
+      if $self->is_connected and $self->is_authenticated;
+    my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
+    my $conn = $client->connect($self->endpoint)->recv;
+    $conn->on(
+        each_message => sub {
+            my ($connection, $message) = @_;
+            my $msg = $message->decoded_body;
+            print Dumper(decode_json($msg->{Response}));
+        }
+    );
+    $conn->on(
+        finish => sub {
+            $self->cv->send;
+        }
+    );
+    # Store connection
+    $self->is_connected(1);
+    $self->conn($conn);
+}
 
 =method close
 
@@ -87,7 +80,7 @@ Closes websocket connection
 =cut
 sub close {
     my $self = shift;
-    $self->env->close;
+    $self->conn->close;
     $self->cv->recv;
 }
 
@@ -108,7 +101,7 @@ sub call {
     my ($self, $params, $cb) = @_;
     $self->request_id($self->request_id + 1);
     $params->{RequestId} = $self->request_id;
-    $self->env->send(encode_json($params));
+    $self->conn->send(encode_json($params));
 }
 
 1;
