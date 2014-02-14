@@ -1,11 +1,11 @@
 package Juju;
-# ABSTRACT: Perl bindings for http://juju.ubuntu.com/
+# ABSTRACT: Non-blocking Perl bindings for http://juju.ubuntu.com/
 
 1;
 
 =head1 DESCRIPTION
 
-Perl bindings for Juju. See L<Juju::Manual> for more information.
+Pure perl non-blocking bindings for Juju. See L<Juju::Manual> for more information.
 
 =head1 NOTICE
 

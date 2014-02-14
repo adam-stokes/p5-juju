@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Perl bindings for http://juju.ubuntu.com/",
+  "ABSTRACT" => "Non-blocking Perl bindings for http://juju.ubuntu.com/",
   "AUTHOR" => "Adam Stokes <adamjs\@cpan.org>",
   "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
@@ -22,7 +22,6 @@ my %WriteMakefileArgs = (
   "NAME" => "Juju",
   "PREREQ_PM" => {
     "AnyEvent" => 0,
-    "AnyEvent::Strict" => 0,
     "AnyEvent::WebSocket::Client" => 0,
     "DDP" => 0,
     "Data::Dumper" => 0,
@@ -37,7 +36,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::NoTabs" => 0
   },
-  "VERSION" => "0.2",
+  "VERSION" => "0.3",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -46,7 +45,6 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "AnyEvent" => 0,
-  "AnyEvent::Strict" => 0,
   "AnyEvent::WebSocket::Client" => 0,
   "DDP" => 0,
   "Data::Dumper" => 0,

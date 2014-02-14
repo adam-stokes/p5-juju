@@ -11,7 +11,6 @@ utilized by the exposed API.
 use Moo;
 use namespace::clean;
 use AnyEvent;
-use AnyEvent::Strict;
 use AnyEvent::WebSocket::Client;
 use JSON;
 use Data::Dumper;
@@ -23,6 +22,13 @@ AE::CondVar
 
 =cut
 has 'cv' => (is => 'ro', default => sub { AnyEvent->condvar });
+
+=attr cb
+
+Current callback for event
+
+=cut
+has 'cb' => (is => 'rw');
 
 =attr conn
 
@@ -45,43 +51,33 @@ Check if a websocket connection exists
 =cut
 has 'is_connected' => (is => 'rw', default => 0);
 
-=method _creation_connection
+=method creation_connection
 
 Initiate a websocket connection and stores itself in C<conn> attribute.
 
+=head3 Returns
+
+Websocket connection
+
 =cut
-sub _create_connection {
+sub create_connection {
     my $self = shift;
     die "Already Connected."
       if $self->is_connected and $self->is_authenticated;
     my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
-    my $conn = $client->connect($self->endpoint)->recv;
-    $conn->on(
-        each_message => sub {
-            my ($connection, $message) = @_;
-            my $msg = $message->decoded_body;
-            print Dumper(decode_json($msg->{Response}));
-        }
-    );
-    $conn->on(
-        finish => sub {
-            $self->cv->send;
-        }
-    );
-    # Store connection
     $self->is_connected(1);
-    $self->conn($conn);
+    $self->conn($client->connect($self->endpoint)->recv);
 }
+
 
 =method close
 
-Closes websocket connection
+Close connection
 
 =cut
 sub close {
     my $self = shift;
     $self->conn->close;
-    $self->cv->recv;
 }
 
 =method call
@@ -91,6 +87,7 @@ Sends event to juju api server
 =head3 Takes
 
 C<params> - Hash of parameters needed to query Juju API
+C<cb> - (optional) callback routine
 
 =head3 Returns
 
@@ -99,9 +96,18 @@ Result of RPC Response
 =cut
 sub call {
     my ($self, $params, $cb) = @_;
+    my $done = AnyEvent->condvar;
+
+    # Increment request id
     $self->request_id($self->request_id + 1);
     $params->{RequestId} = $self->request_id;
     $self->conn->send(encode_json($params));
+    $self->conn->on(
+        each_message => sub {
+            $done->send(decode_json(pop->decoded_body)->{Response});
+        }
+    );
+    $cb->($done->recv);
 }
 
 1;

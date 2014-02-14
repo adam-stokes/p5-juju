@@ -1,14 +1,15 @@
 NAME
 
-    Juju - Perl bindings for http://juju.ubuntu.com/
+    Juju - Non-blocking Perl bindings for http://juju.ubuntu.com/
 
 VERSION
 
-    version 0.2
+    version 0.3
 
 DESCRIPTION
 
-    Perl bindings for Juju. See Juju::Manual for more information.
+    Pure perl non-blocking bindings for Juju. See Juju::Manual for more
+    information.
 
 NOTICE
 

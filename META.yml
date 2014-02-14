@@ -1,5 +1,5 @@
 ---
-abstract: 'Perl bindings for http://juju.ubuntu.com/'
+abstract: 'Non-blocking Perl bindings for http://juju.ubuntu.com/'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
@@ -19,11 +19,10 @@ meta-spec:
 name: Juju
 requires:
   AnyEvent: '0'
-  AnyEvent::Strict: '0'
   AnyEvent::WebSocket::Client: '0'
   DDP: '0'
   Data::Dumper: '0'
   JSON: '0'
   Moo: '0'
   namespace::clean: '0'
-version: '0.2'
+version: '0.3'

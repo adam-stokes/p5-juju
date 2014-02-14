@@ -1,5 +1,4 @@
 requires "AnyEvent" => "0";
-requires "AnyEvent::Strict" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
 requires "DDP" => "0";
 requires "Data::Dumper" => "0";
