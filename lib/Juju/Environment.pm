@@ -33,17 +33,13 @@ Stores if user has authenticated with juju api server
 =cut
 has 'is_authenticated' => (is => 'rw', default => 0);
 
-=method _prepare_constraints
+=method _prepare_constraints ($constraints)
 
 Makes sure cpu-cores, cpu-power, mem are integers
 
-=head3 Takes
-
 C<constraints> - hash of service constraints
 
-=head3 Returns
-
-C<constraints> - update constraint hash with any integers set properly.
+B<Returns> - an updated constraint hash with any integers set properly.
 
 =cut
 sub _prepare_constraints {
@@ -83,11 +79,9 @@ sub login {
 
 =method info
 
-Return environment information
+Environment information
 
-=head3 Returns
-
-Juju environment state
+B<Returns> - Juju environment state
 
 =cut
 sub info {
@@ -101,9 +95,11 @@ sub info {
     );
 }
 
-=method add_charm
+=method add_charm ($charm_url)
 
 Add charm
+
+C<charm_url> - url of charm
 
 =cut
 sub add_charm {
@@ -116,9 +112,11 @@ sub add_charm {
     );
 }
 
-=method get_charm
+=method get_charm ($charm_url)
 
 Get charm
+
+C<charm_url> - url of charm
 
 =cut
 sub get_charm {
@@ -133,6 +131,8 @@ sub get_charm {
 
 =method get_env_constraints
 
+Get environment constraints
+
 =cut
 sub get_env_constraints {
     my $self = shift;
@@ -143,7 +143,11 @@ sub get_env_constraints {
     );
 }
 
-=method set_env_constraints
+=method set_env_constraints ($constraints)
+
+Set environment constraints
+
+C<constraints> - environment constraints
 
 =cut
 sub set_env_constraints {
@@ -166,7 +170,9 @@ sub get_env_config {
             "Request"=> "EnvironmentGet"});
 }
 
-=method set_env_config
+=method set_env_config ($config)
+
+C<config> - Config parameters
 
 =cut
 sub set_env_config {
@@ -179,11 +185,9 @@ sub set_env_config {
     );
 }
 
-=method add_machine
+=method add_machine ($series, $constraints, $machine_spec, $parent_id, $container_type)
 
 Allocate new machine from the iaas provider (i.e. MAAS)
-
-=head3 Takes
 
 C<series> - OS series (i.e precise)
 
@@ -213,13 +217,11 @@ sub add_machine {
     return $self->add_machines([$params])->{Machines}->[0];
 }
 
-=method add_machines
+=method add_machines ($machines)
 
 Add multiple machines from iaas provider
 
-=head3 Takes
-
-C<machines>
+C<machines> - List of machines
 
 =cut
 sub add_machines {
@@ -244,7 +246,7 @@ sub add_machines {
 
 =cut
 
-=method add_relation
+=method add_relation ($endpoint_a, $endpoint_b)
 
 Sets a relation between units
 
@@ -259,7 +261,7 @@ sub add_relation {
     );
 }
 
-=method remove_relation
+=method remove_relation ($endpoint_a, $endpoint_b)
 
 Removes relation between endpoints
 
@@ -274,7 +276,7 @@ sub remove_relation {
     );
 }
 
-=method deploy
+=method deploy ($service_name, $charm_url, $num_units, $config, $constraints, $machine_spec)
 
 Deploys a charm to service
 
@@ -303,11 +305,9 @@ sub deploy {
     );
 }
 
-=method set_config
+=method set_config ($service_name, $config)
 
 Set's configuration parameters for unit
-
-=head3 Takes
 
 C<service_name> - name of service (ie. blog)
 
@@ -328,11 +328,9 @@ sub set_config {
     );
 }
 
-=method unset_config
+=method unset_config ($service_name, $config_keys)
 
 Unsets configuration value for service to restore charm defaults
-
-=head3 Takes
 
 C<service_name> - name of service
 
@@ -352,11 +350,9 @@ sub unset_config {
     );
 }
 
-=method set_charm
+=method set_charm ($service_name, $charm_url, $force)
 
 Sets charm url for service
-
-=head3 Takes
 
 C<service_name> - name of service
 
@@ -378,17 +374,13 @@ sub set_charm {
     );
 }
 
-=method get_service
+=method get_service ($service_name)
 
 Returns information on charm, config, constraints, service keys.
 
-=head3 Takes
-
 C<service_name> - name of service
 
-=head3 Returns
-
-Hash of information on service
+B<Returns> - Hash of information on service
 
 =cut
 sub get_service {
@@ -402,17 +394,13 @@ sub get_service {
     );
 }
 
-=method get_config
+=method get_config ($service_name)
 
 Get service configuration
 
-=head3 Takes
-
 C<service_name> - name of service
 
-=head3 Returns
-
-Hash of service configuration
+B<Returns> - Hash of service configuration
 
 =cut
 sub get_config {
@@ -421,7 +409,9 @@ sub get_config {
     return $svc->{Config};
 }
 
-=method get_constraints
+=method get_constraints ($service_name)
+
+C<service_name> - Name of service
 
 =cut
 sub get_constraints {
@@ -438,7 +428,11 @@ sub get_constraints {
     );
 }
 
-=method set_constraints
+=method set_constraints ($service_name, $constraints)
+
+C<service_name> - Name of service
+
+C<constraints> - Service constraints
 
 =cut
 sub set_constraints {
@@ -455,7 +449,7 @@ sub set_constraints {
     );
 }
 
-=method update_service
+=method update_service ($service_name, $charm_url, $force_charm_url, $min_units, $settings, $constraints)
 
 Update a service
 
@@ -480,11 +474,9 @@ sub update_service {
     );
 }
 
-=method destroy_service
+=method destroy_service ($service_name)
 
 Destroys a service
-
-=head3 Takes
 
 C<service_name> - name of service
 
@@ -500,9 +492,11 @@ sub destroy_service {
     );
 }
 
-=method expose
+=method expose ($service_name)
 
 Expose service
+
+C<service_name> - Name of service
 
 =cut
 sub expose {
@@ -515,9 +509,11 @@ sub expose {
     );
 }
 
-=method unexpose
+=method unexpose ($service_name)
 
 Unexpose service
+
+C<service_name> - Name of service
 
 =cut
 sub unexpose {
