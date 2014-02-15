@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+	- Use MIT license
+	- Add more api calls
 
 0.3     2014-02-14
 	- Adding API calls

@@ -71,6 +71,7 @@ Sends event to juju api server
 =head3 Takes
 
 C<params> - Hash of parameters needed to query Juju API
+
 C<cb> - (optional) callback routine
 
 =head3 Returns

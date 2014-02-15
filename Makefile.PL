@@ -18,7 +18,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "Juju",
   "EXE_FILES" => [],
-  "LICENSE" => "perl",
+  "LICENSE" => "mit",
   "NAME" => "Juju",
   "PREREQ_PM" => {
     "AnyEvent" => 0,
@@ -34,7 +34,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::NoTabs" => 0
   },
-  "VERSION" => "0.3",
+  "VERSION" => "0.4",
   "test" => {
     "TESTS" => "t/*.t"
   }
