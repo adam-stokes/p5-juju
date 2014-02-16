@@ -388,7 +388,7 @@ sub get_service {
     $self->call(
         {   "Type"    => "Client",
             "Request" => "ServiceGet",
-            "Params"  => {"ServiceName" => service_name}
+            "Params"  => {"ServiceName" => $service_name}
         },
         sub { my $res = shift; return $res }
     );

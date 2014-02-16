@@ -16,5 +16,9 @@ my $client = Juju::Environment->new(
 );
 $client->login;
 my $_info = $client->info;
+my $_info2 = $client->info;
+my $_info3 = $client->info;
 p $_info->{DefaultSeries};
+p $_info2->{DefaultSeries};
+p $_info3->{UUID};
 $client->close;
