@@ -8,11 +8,12 @@ utilized by the exposed API.
 
 =cut
 
-use Moo;
-use namespace::clean;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
 use JSON;
+
+use Moo;
+use namespace::clean;
 
 =attr conn
 
