@@ -11,7 +11,7 @@ $Data::Dumper::Indent = 1;
 
 my $client = Juju::Environment->new(
     endpoint => 'wss://10.0.3.1:17070/',
-    password => 'bac2d0de80a99bb499c442326a617788'
+    password => $ENV{'JUJU_PASS'} ? $ENV{'JUJU_PASS'} : 'bac2d0de80a99bb499c442326a617788'
 );
 $client->login;
 my $_info = $client->info;
