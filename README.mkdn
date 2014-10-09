@@ -4,11 +4,11 @@ Juju - Non-blocking Perl bindings for http://juju.ubuntu.com/
 
 # VERSION
 
-version 0.6
+version 0.7
 
 # DESCRIPTION
 
-Pure perl non-blocking bindings for Juju. See [Juju::Manual](https://metacpan.org/pod/Juju::Manual) for more information.
+Pure perl non-blocking bindings for Juju. See [Juju::Manual::Quickstart](https://metacpan.org/pod/Juju::Manual::Quickstart) for more information.
 
 # NOTICE
 

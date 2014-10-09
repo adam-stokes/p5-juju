@@ -23,7 +23,7 @@ my %WriteMakefileArgs = (
     "AnyEvent" => 0,
     "AnyEvent::WebSocket::Client" => 0,
     "Class::Tiny" => 0,
-    "JSON" => 0,
+    "JSON::PP" => 0,
     "parent" => 0,
     "strict" => 0,
     "warnings" => 0
@@ -41,7 +41,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::NoTabs" => 0
   },
-  "VERSION" => "0.6",
+  "VERSION" => "0.7",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -57,7 +57,7 @@ my %FallbackPrereqs = (
   "IO::Handle" => 0,
   "IO::Socket::SSL" => 0,
   "IPC::Open3" => 0,
-  "JSON" => 0,
+  "JSON::PP" => 0,
   "Pod::Elemental::Transformer::List" => 0,
   "Pod::Weaver::Plugin::Encoding" => 0,
   "Test::Compile" => 0,

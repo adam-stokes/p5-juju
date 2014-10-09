@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
-use JSON;
+use JSON::PP;
 
 =attr conn
 

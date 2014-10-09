@@ -34,9 +34,16 @@ Stores if user has authenticated with juju api server
 =cut
 
 use Class::Tiny qw(password is_authenticated), {
-    'endpoint' => sub {'wss://localhost:17070'},
-    'username' => sub {'user-admin'}
+    endpoint => sub {'wss://localhost:17070'},
+    username => sub {'user-admin'},
+    Jobs     => sub {
+        +{  HostUnits     => 'JobHostUnits',
+            ManageEnviron => 'JobManageEnviron',
+            ManageState   => 'JobManageSate'
+        };
+    }
 };
+
 
 =method _prepare_constraints ($constraints)
 
@@ -47,10 +54,11 @@ C<constraints> - hash of service constraints
 B<Returns> - an updated constraint hash with any integers set properly.
 
 =cut
+
 sub _prepare_constraints {
     my ($self, $constraints) = @_;
     foreach my $key (keys %{$constraints}) {
-        if ($key =~ /cpu-cores|cpu-power|mem/) {
+        if ($key =~ /^(cpu-cores|cpu-power|mem|root-disk)/) {
             $constraints->{k} = int($constraints->{k});
         }
     }
@@ -62,6 +70,7 @@ sub _prepare_constraints {
 Login to juju
 
 =cut
+
 sub login {
     my $self = shift;
     $self->create_connection unless $self->is_connected;
@@ -80,6 +89,21 @@ sub login {
     );
 }
 
+
+=method reconnect
+
+Reconnects to API server in case of timeout
+
+=cut
+
+sub reconnect {
+    my $self = shift;
+    $self->close;
+    $self->create_connection;
+    $self->login;
+    $self->request_id = 1;
+}
+
 =method info
 
 Environment information
@@ -87,6 +111,7 @@ Environment information
 B<Returns> - Juju environment state
 
 =cut
+
 sub info {
     my $self = shift;
     $self->call(
@@ -98,6 +123,47 @@ sub info {
     );
 }
 
+
+=method status
+
+Returns juju environment status
+
+=cut
+
+sub status {
+    my $self = shift;
+    $self->call(
+        {   "Type"   => "Client",
+            "Requst" => "FullStatus"
+        }
+    );
+}
+
+
+=method get_watcher
+
+Returns watcher
+
+=cut
+
+sub get_watcher {
+    my $self = shift;
+    $self->call({"Type" => "Client", "Request" => "WatchAll"});
+}
+
+=method get_watched_tasks ($watcher_id)
+
+List of all watches for Id
+
+=cut
+
+sub get_watched_tasks {
+    my ($self, $watcher_id) = @_;
+    $self->call(
+        {"Type" => "AllWatcher", "Request" => "Next", "Id" => $watcher_id});
+}
+
+
 =method add_charm ($charm_url)
 
 Add charm
@@ -105,6 +171,7 @@ Add charm
 C<charm_url> - url of charm
 
 =cut
+
 sub add_charm {
     my ($self, $charm_url) = @_;
     $self->call(
@@ -122,6 +189,7 @@ Get charm
 C<charm_url> - url of charm
 
 =cut
+
 sub get_charm {
     my ($self, $charm_url) = @_;
     $self->call(
@@ -137,6 +205,7 @@ sub get_charm {
 Get environment constraints
 
 =cut
+
 sub get_env_constraints {
     my $self = shift;
     $self->call(
@@ -153,6 +222,7 @@ Set environment constraints
 C<constraints> - environment constraints
 
 =cut
+
 sub set_env_constraints {
     my ($self, $constraints) = @_;
     $self->call(
@@ -166,11 +236,14 @@ sub set_env_constraints {
 =method get_env_config
 
 =cut
+
 sub get_env_config {
-  my $self = shift;
-        $self->call({
-            "Type"=> "Client",
-            "Request"=> "EnvironmentGet"});
+    my $self = shift;
+    $self->call(
+        {   "Type"    => "Client",
+            "Request" => "EnvironmentGet"
+        }
+    );
 }
 
 =method set_env_config ($config)
@@ -178,6 +251,7 @@ sub get_env_config {
 C<config> - Config parameters
 
 =cut
+
 sub set_env_config {
     my ($self, $config) = @_;
     $self->call(
@@ -206,18 +280,19 @@ Note: Not quite right as I've no idea wtf its doing yet, need to read
 the specs.
 
 =cut
+
 sub add_machine {
     my ($self, $series, $constraints, $machine_spec, $parent_id,
         $container_type)
       = @_;
     my $params = {
         "Series"        => $series,
-        "Constraints"   => $constraints,
+        "Constraints"   => $self->_prepare_constraints($constraints),
         "ContainerType" => $container_type,
         "ParentId"      => $parent_id,
-        "Jobs"          => "",                # TODO: add jobs
+        "Jobs"          => $self->Jobs->{HostUnits},
     };
-    return $self->add_machines([$params])->{Machines}->[0];
+    return $self->add_machines([$params]);
 }
 
 =method add_machines ($machines)
@@ -227,6 +302,7 @@ Add multiple machines from iaas provider
 C<machines> - List of machines
 
 =cut
+
 sub add_machines {
     my ($self, $machines) = @_;
     $self->call(
@@ -243,6 +319,24 @@ sub add_machines {
 
 =method destroy_machines
 
+Destroy machines
+
+=cut
+
+sub destroy_machines {
+    my ($self, $machine_ids, $force) = @_;
+    my $params = {"MachineNames" => $machine_ids};
+    if ($force) {
+        $params->{Force} = 1;
+    }
+    return $self->call(
+        {   "Type"    => "Client",
+            "Request" => "DestroyMachines",
+            "Params"  => $params
+        }
+    );
+}
+
 =method provisioning_script
 
 =method machine_config
@@ -254,6 +348,7 @@ sub add_machines {
 Sets a relation between units
 
 =cut
+
 sub add_relation {
     my ($self, $endpoint_a, $endpoint_b) = @_;
     $self->call(
@@ -269,6 +364,7 @@ sub add_relation {
 Removes relation between endpoints
 
 =cut
+
 sub remove_relation {
     my ($self, $endpoint_a, $endpoint_b) = @_;
     $self->call(
@@ -279,31 +375,31 @@ sub remove_relation {
     );
 }
 
-=method deploy ($service_name, $charm_url, $num_units, $config, $constraints, $machine_spec)
+=method deploy ($service_name, $charm_url, $num_units, $config_yaml, $constraints, $machine_spec)
 
 Deploys a charm to service
 
 =cut
+
 sub deploy {
-    my ($self, $service_name, $charm_url, $num_units, $config, $constraints,
-        $machine_spec)
+    my ($self, $service_name, $charm_url, $num_units, $config_yaml,
+        $constraints, $machine_spec)
       = @_;
+    my $params = {ServiceName => $service_name};
     $num_units = 1 unless $num_units;
+    $params->{NumUnits}   = $num_units;
+    $params->{ConfigYAML} = $config_yaml;
     my $svc_constraints;
     if ($constraints) {
-        $svc_constraints = $self->_prepare_constraints($constraints);
+        $params->{Constraints} = $self->_prepare_constraints($constraints);
+    }
+    if ($machine_spec) {
+        $params->{ToMachineSpec} = $machine_spec;
     }
     $self->call(
         {   "Type"    => "Client",
             "Request" => "ServiceDeploy",
-            "Params"  => {
-                "ServiceName"   => $service_name,
-                "CharmURL"      => $charm_url,
-                "NumUnits"      => $num_units,
-                "Config"        => $config,
-                "Constraints"   => $svc_constraints,
-                "ToMachineSpec" => $machine_spec
-            }
+            "Params"  => $params
         }
     );
 }
@@ -317,6 +413,7 @@ C<service_name> - name of service (ie. blog)
 C<config> - hash of config parameters
 
 =cut
+
 sub set_config {
     my ($self, $service_name, $config) = @_;
     die "Not a hash" unless ref $config eq 'HASH';
@@ -340,6 +437,7 @@ C<service_name> - name of service
 C<config_keys> - hash of config keys to unset
 
 =cut
+
 sub unset_config {
     my ($self, $service_name, $config_keys) = @_;
     return $self->call(
@@ -362,6 +460,7 @@ C<service_name> - name of service
 C<charm_url> - charm location (ie. cs:precise/wordpress)
 
 =cut
+
 sub set_charm {
     my ($self, $service_name, $charm_url, $force) = @_;
     $force = 0 unless $force;
@@ -386,6 +485,7 @@ C<service_name> - name of service
 B<Returns> - Hash of information on service
 
 =cut
+
 sub get_service {
     my ($self, $service_name) = @_;
     $self->call(
@@ -406,6 +506,7 @@ C<service_name> - name of service
 B<Returns> - Hash of service configuration
 
 =cut
+
 sub get_config {
     my ($self, $service_name) = @_;
     my $svc = $self->get_service($service_name);
@@ -417,6 +518,7 @@ sub get_config {
 C<service_name> - Name of service
 
 =cut
+
 sub get_constraints {
     my ($self, $service_name) = @_;
     $self->call(
@@ -438,6 +540,7 @@ C<service_name> - Name of service
 C<constraints> - Service constraints
 
 =cut
+
 sub set_constraints {
     my ($self, $service_name, $constraints) = @_;
     $self->call(
@@ -457,6 +560,7 @@ sub set_constraints {
 Update a service
 
 =cut
+
 sub update_service {
     my ($self, $service_name, $charm_url, $force_charm_url,
         $min_units, $settings, $constraints)
@@ -484,6 +588,7 @@ Destroys a service
 C<service_name> - name of service
 
 =cut
+
 sub destroy_service {
     my ($self, $service_name) = @_;
     $self->call(
@@ -502,6 +607,7 @@ Expose service
 C<service_name> - Name of service
 
 =cut
+
 sub expose {
     my ($self, $service_name) = @_;
     $self->call(
@@ -519,6 +625,7 @@ Unexpose service
 C<service_name> - Name of service
 
 =cut
+
 sub unexpose {
     my ($self, $service_name) = @_;
     $self->call(
@@ -535,6 +642,7 @@ sub unexpose {
 All possible relation names of a service
 
 =cut
+
 sub valid_relation_names {
     my ($self, $service_name) = @_;
     $self->call(
@@ -549,6 +657,7 @@ sub valid_relation_names {
 =method add_units
 
 =cut
+
 sub add_units {
     my ($self, $service_name, $num_units) = @_;
     $num_units = 1 unless $num_units;
@@ -570,6 +679,7 @@ sub add_units {
 =method add_unit
 
 =cut
+
 sub add_unit {
     my ($self, $service_name, $machine_spec) = @_;
     $machine_spec = 0 unless $machine_spec;
@@ -591,10 +701,11 @@ sub add_unit {
 }
 
 
-=method remove_units
+=method remove_unit
 
 =cut
-sub remove_units {
+
+sub remove_unit {
     my ($self, $unit_names) = @_;
     $self->call(
         {   "Type"    => "Client",
@@ -608,6 +719,7 @@ sub remove_units {
 =method resolved
 
 =cut
+
 sub resolved {
     my ($self, $unit_name, $retry) = @_;
     $retry = 0 unless $retry;
@@ -627,6 +739,7 @@ sub resolved {
 =method get_public_address
 
 =cut
+
 sub get_public_address {
     my ($self, $target) = @_;
     $self->call(
@@ -644,6 +757,7 @@ Set annotations on entity, valid types are C<service>, C<unit>,
 C<machine>, C<environment>
 
 =cut
+
 sub set_annotation {
     my ($self, $entity, $entity_type, $annotation) = @_;
     $self->call(
@@ -661,6 +775,7 @@ sub set_annotation {
 =method get_annotation
 
 =cut
+
 sub get_annotation {
     my ($self, $entity, $entity_type) = @_;
     $self->call(
