@@ -1,5 +1,7 @@
 package Juju::Manual::Quickstart;
 
+# ABSTRACT: Getting started with Juju
+
 =head1 INSTALL
 
 Installation is handled through cpanm and you can point directly to

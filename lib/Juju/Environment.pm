@@ -1,37 +1,42 @@
 package Juju::Environment;
+
 # ABSTRACT: Exposed juju api environment
 
-use Moo;
-extends 'Juju::RPC';
+=head1 SYNOPSIS
+
+  use Juju;
+
+  my $juju = Juju->new(endpoint => 'wss://localhost:17070', password => 's3cr3t');
+
+=cut
+
+use strict;
+use warnings;
+use parent 'Juju::RPC';
 
 =attr endpoint
 
 Websocket address
 
-=cut
-has 'endpoint' => (is => 'ro', default => sub { 'wss://localhost:17070' });
-
 =attr username
 
 Juju admin user, this is a tag and should not need changing from the default.
-
-=cut
-has 'username' => (is => 'ro', default => 'user-admin');
 
 =attr password
 
 Password of juju administrator, found in your environments configuration 
 under 'admin-secret:'
 
-=cut
-has 'password' => (is => 'rw');
-
 =attr is_authenticated
 
 Stores if user has authenticated with juju api server
 
 =cut
-has 'is_authenticated' => (is => 'rw', default => 0);
+
+use Class::Tiny qw(password is_authenticated), {
+    'endpoint' => sub {'wss://localhost:17070'},
+    'username' => sub {'user-admin'}
+};
 
 =method _prepare_constraints ($constraints)
 
@@ -51,8 +56,6 @@ sub _prepare_constraints {
     }
     return $constraints;
 }
-
-
 
 =method login
 

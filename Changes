@@ -1,13 +1,263 @@
-Revision history for {{$dist->name}}
+==================================================
+Changes from 2013-10-09 00:00:00 +0000 to present.
+==================================================
 
-{{$NEXT}}
+----------------------------------------
+version 0.6 at 2014-10-09 04:10:20 +0000
+----------------------------------------
 
-0.5     2014-04-22
+  Change: 30c3ab314948313b211c5340e8e4e5887fa16448
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-09 00:04:51 +0000
 
-0.4     2014-02-15
-	- Use MIT license
-	- Add more api calls
+    update dist
 
-0.3     2014-02-14
-	- Adding API calls
-	- Finished non-blocking code
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 8d2f7a2c9a3cbd43366968ded05f6c3bd2d6151c
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-09-07 13:09:34 +0000
+
+    fix eg
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.5 at 2014-04-22 17:03:35 +0000
+----------------------------------------
+
+  Change: 454f13c5ed3a7a98f85c96cdd4e029ce62fa9d78
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-04-22 13:03:35 +0000
+
+    v0.5 
+
+  Change: 58083363a72ccbbd61e57cfc099f20ee96c9bd42
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-04-22 13:03:17 +0000
+
+    prep for release
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 7ca15e0eeea99b4db5ea25d12ba71677fbeb3060
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-03-12 18:07:57 +0000
+
+    eg/envinfo.pl
+
+    - Support env variable
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: e1c26d4be11441ceababed1264fce86d625cd999
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-21 23:30:08 +0000
+
+    fix namespace clean
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 76adfae98f4c2b6e03e067ad563b96650b4eea67
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-16 23:26:23 +0000
+
+    clean up example
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: f8cefd5aa8a74f6bf1ec59f876a3dec3315cee6c
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-15 19:10:25 +0000
+
+    fix bareword error
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 8000eecc33d3839b4be3cf05cf8bccca8ab71c47
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-15 18:59:52 +0000
+
+    update environment api docs
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.4 at 2014-02-15 23:47:00 +0000
+----------------------------------------
+
+  Change: 15dd7faa09cd0a00ffe42f692aef92500a89a0e9
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-15 18:47:00 +0000
+
+    v0.4
+
+    - Use MIT license
+
+    - Add more api calls 
+
+  Change: 1bc48d77a4c4a6f6810257a8d02b47d1033a7475
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-15 18:46:42 +0000
+
+    change license to MIT; add more api calls
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.3 at 2014-02-14 22:16:08 +0000
+----------------------------------------
+
+  Change: 44d7c48ae6bd20c43c645786994c4bf4d42680fe
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-14 17:16:08 +0000
+
+    v0.3
+
+    - Adding API calls
+
+    - Finished non-blocking code 
+
+  Change: bdfc388c297264a675a84a279f36893f16d7eec4
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-14 17:16:02 +0000
+
+    pre
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: bbf8e74af8c6478bf185b2601a204d821fd97c5d
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-14 17:12:07 +0000
+
+    Fix events, start adding api calls
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.2 at 2014-02-14 05:03:26 +0000
+----------------------------------------
+
+  Change: 9c249f553944060eda7b1361297c993ff3e100d6
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-14 00:03:26 +0000
+
+    v0.2 
+
+  Change: b8a60e6bb865e0afbdf3ccffc79e7fc73bceef99
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-14 00:02:33 +0000
+
+    more websocket work
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 394ad83c0b7735b3b9202583a46db8c4d1372617
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-13 23:38:49 +0000
+
+    update examples, clean up event code
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 1cd20a7a687dc8a714a6c90ce0bfe658215a9fe7
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-13 19:06:14 +0000
+
+    update eg
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 7b5dd7e0b7386fa3c921b1cdab797838642bdf0f
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-12 17:22:49 +0000
+
+    websockets.....:(((((
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 644ef83f8ec1aea9fefc4689413191cc6eb51574
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-11 21:28:04 +0000
+
+    websockets make my head hurt
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 8f8468402931a3c861134264b0cc36f351063b6a
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-11 19:56:11 +0000
+
+    more work on connection
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 342776568615c9ad12cd774c4c9ea6db96e458e2
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-11 15:41:46 +0000
+
+    start connection code
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 06b268b74fa8166e6ae1e95ac97b5e2efd428888
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-08 22:43:23 +0000
+
+    what spec does juju use for websockets????
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 8b140d22e788b6d5eb883f0090c8bfc945c4c1fc
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 18:16:02 +0000
+
+    More work on environment and RPC
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 056f3607af3eff49708669bcc55ef13d9d5ed2e8
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 17:58:05 +0000
+
+    Add RPC, Environment classes
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 4518b232413d0f959ceabd87674fd5398018b75b
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 17:23:41 +0000
+
+    start manual
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.1 at 2014-02-07 18:49:46 +0000
+----------------------------------------
+
+  Change: c7df68d9b166612bb0327a4fac6034361c98c466
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 13:49:46 +0000
+
+    v0.1 
+
+  Change: 12b583daf348a254f7fbde408f01e358678fa46b
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 13:49:30 +0000
+
+    add build files
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: c0e0775638b3ddccd5968a439d9748fa9ff41f57
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-02-07 13:42:01 +0000
+
+    init
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+================
+End of releases.
+================

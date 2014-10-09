@@ -8,33 +8,26 @@ utilized by the exposed API.
 
 =cut
 
+use strict;
+use warnings;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
 use JSON;
-
-use Moo;
-use namespace::clean;
 
 =attr conn
 
 Connection object
 
-=cut
-has 'conn' => (is => 'rw');
-
 =attr request_id
 
 An incremented ID based on how many requests performed on the connection.
-
-=cut
-has 'request_id' => (is => 'rw', default => 0);
 
 =attr is_connected
 
 Check if a websocket connection exists
 
 =cut
-has 'is_connected' => (is => 'rw', default => 0);
+use Class::Tiny qw(conn request_id is_connected);
 
 =method creation_connection
 
