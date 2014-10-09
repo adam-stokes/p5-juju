@@ -3,8 +3,26 @@ Changes from 2013-10-09 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.7 at 2014-10-09 04:37:36 +0000
+version 0.8 at 2014-10-09 13:49:03 +0000
 ----------------------------------------
+
+  Change: 740c5e93ee9497a4e194e70d455dfc16904af28b
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-09 09:48:21 +0000
+
+    fix method load
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 0.7 at 2014-10-09 04:37:46 +0000
+----------------------------------------
+
+  Change: 4db27c7323959499c6f564d3d068d51f72501b03
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-09 00:37:46 +0000
+
+    v0.7 
 
   Change: 29ba97028ce080e0fac59192a61cfb0aad783563
   Author: Adam Stokes <adam.stokes@ubuntu.com>

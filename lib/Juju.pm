@@ -16,4 +16,6 @@ until this project reaches 1.x version.
 use strict;
 use warnings;
 
+use parent 'Juju::Environment';
+
 1;
