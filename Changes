@@ -3,12 +3,12 @@ Changes from 2013-10-09 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.7 at 2014-10-09 04:37:21 +0000
+version 0.7 at 2014-10-09 04:37:36 +0000
 ----------------------------------------
 
-  Change: c140fbd0d93f541266f0296f81db98d798d18e0b
+  Change: 29ba97028ce080e0fac59192a61cfb0aad783563
   Author: Adam Stokes <adam.stokes@ubuntu.com>
-  Date : 2014-10-09 00:37:16 +0000
+  Date : 2014-10-09 00:37:30 +0000
 
     Update API to work with latest Juju 1.20.x series
 
