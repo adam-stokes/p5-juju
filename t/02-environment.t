@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
+use DDP;
 
 plan skip_all =>
   'must export JUJU_PASS and JUJU_ENDPOINT to enable these tests'
@@ -21,28 +22,28 @@ $juju->login;
 # ENVIRONMENT -----------------------------------------------------------------
 $juju->environment_info(
     sub {
-        my $val = shift;
-        ok(defined($val->{UUID}), "Non block info works.");
+        my $val = shift->{Response};
+        ok(defined($val->{UUID}), "Should get environment.");
     }
 );
 
 $juju->client_api_host_ports(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{Servers}), "Non block apihosts");
     }
 );
 
 $juju->agent_version(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{Version}), "Non block agent version");
     }
 );
 
 $juju->abort_current_upgrade(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(ref($val) eq 'HASH', 'Got a empty hash on abort current upgrade');
     }
 );
@@ -50,37 +51,38 @@ $juju->abort_current_upgrade(
 
 $juju->status(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{Machines}), "non block status works");
     }
 );
 
 $juju->get_environment_constraints(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{Constraints}), "non block env constraints work");
     }
 );
 
+
 # WATCHERS --------------------------------------------------------------------
 $juju->get_watcher(
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{AllWatcherId}), "non block watchers works");
     }
 );
 
 my $watcher = $juju->get_watcher;
 $juju->get_watched_tasks(
-    $watcher->{AllWatcherId},
+    $watcher->{Response}->{AllWatcherId},
     sub {
-        my $val = shift;
+        my $val = shift->{Response};
         ok(defined($val->{Deltas}), "non block watched_tasks works");
     }
 );
 
 dies_ok {
-    $juju->get_watched_tasks($watcher->{AllWatcherId})
+    $juju->get_watched_tasks($watcher->{Response}->{AllWatcherId})
 }
 "should die as it doesn't run synchronously";
 

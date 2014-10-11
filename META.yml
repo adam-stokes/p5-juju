@@ -29,7 +29,10 @@ name: Juju
 requires:
   AnyEvent: '0'
   AnyEvent::WebSocket::Client: '0'
+  Carp: '0'
   Class::Tiny: '0'
+  DDP: '0'
+  Data::Validate::Type: '0'
   HTTP::Tiny: '0'
   JSON::PP: '0'
   YAML::Tiny: '0'
@@ -38,4 +41,4 @@ requires:
   warnings: '0'
 resources:
   repository: git://github.com/battlemidget/p5-juju.git
-version: '1.2'
+version: '1.3'

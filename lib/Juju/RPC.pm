@@ -43,10 +43,7 @@ sub BUILD {
             my ($conn, $message) = @_;
             my $body = decode_json($message->decoded_body);
             if (defined($body->{Response})) {
-                $self->done->send($body->{Response});
-            }
-            else {
-                die 'Error: ' . $message->decoded_body;
+                $self->done->send($body);
             }
         }
     );
@@ -64,7 +61,21 @@ sub close {
 
 =method call ($params, $cb)
 
-Sends event to juju api server
+Sends event to juju api server, this is the entrypoint for all api calls. If an
+B<error> occurs it will return a response object of:
+
+  {
+    Error => 'Error message',
+    RequestId => 1,
+    Response => {}
+  }
+
+Otherwise, successful queries will return:
+
+  {
+    Response => { some_successful => 'hash' }
+    RequestId => 1
+  }
 
 =cut
 sub call {
