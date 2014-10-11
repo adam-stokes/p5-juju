@@ -3,8 +3,20 @@ Changes from 2013-10-11 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.2 at 2014-10-11 21:31:12 +0000
+version 1.2 at 2014-10-11 21:32:56 +0000
 ----------------------------------------
+
+  Change: 5ef6812dbf6ce686faeccc4decfbde6bb970ad9f
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-11 17:32:21 +0000
+
+    cleanup rpc code
+
+    update example script
+
+    update tests to make use of newer rpc code
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
   Change: 59c10eff1203b0b5facea752cd06aed7b8deeead
   Author: Adam Stokes <adam.stokes@ubuntu.com>
