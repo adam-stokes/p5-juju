@@ -3,12 +3,20 @@ Changes from 2013-10-11 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.2 at 2014-10-11 20:19:35 +0000
+version 1.2 at 2014-10-11 21:31:12 +0000
 ----------------------------------------
 
-  Change: 349bda916e9e277e9bad391b28f70332c5bd8adc
+  Change: 59c10eff1203b0b5facea752cd06aed7b8deeead
   Author: Adam Stokes <adam.stokes@ubuntu.com>
-  Date : 2014-10-11 16:18:30 +0000
+  Date : 2014-10-11 16:24:44 +0000
+
+    Update quickstart document
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: dd4c483a4e9d50d2b177eacff034fe6060a285a7
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-11 16:19:53 +0000
 
     add seealso pod weaver plugin
 

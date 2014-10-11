@@ -105,20 +105,21 @@ Login to juju
 
 sub login {
     my $self = shift;
-    $self->create_connection unless $self->is_connected;
-    $self->call(
-        {   "Type"      => "Admin",
-            "Request"   => "Login",
-            "RequestId" => $self->request_id,
-            "Params"    => {
-                "AuthTag"  => $self->username,
-                "Password" => $self->password
-            }
-        },
-        sub {
-            $self->is_authenticated(1);
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+    my $params = {
+        "Type"      => "Admin",
+        "Request"   => "Login",
+        "RequestId" => $self->request_id,
+        "Params"    => {
+            "AuthTag"  => $self->username,
+            "Password" => $self->password
         }
-    );
+    };
+
+    # block
+    my $res = $self->call($params);
+    $self->is_authenticated(1) unless !defined($res->{EnvironTag});
 }
 
 
@@ -131,7 +132,6 @@ Reconnects to API server in case of timeout
 sub reconnect {
     my $self = shift;
     $self->close;
-    $self->create_connection;
     $self->login;
     $self->request_id = 1;
 }

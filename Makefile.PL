@@ -31,7 +31,6 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
-    "DDP" => 0,
     "ExtUtils::MakeMaker" => 0,
     "File::Spec" => 0,
     "IO::Handle" => 0,
@@ -57,7 +56,6 @@ my %FallbackPrereqs = (
   "AnyEvent" => 0,
   "AnyEvent::WebSocket::Client" => 0,
   "Class::Tiny" => 0,
-  "DDP" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
   "HTTP::Tiny" => 0,

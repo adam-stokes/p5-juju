@@ -3,7 +3,6 @@ abstract: 'Pure Perl bindings for Juju'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
-  DDP: '0'
   ExtUtils::MakeMaker: '0'
   File::Spec: '0'
   IO::Handle: '0'

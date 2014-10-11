@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
-use DDP;
 
 plan skip_all =>
   'must export JUJU_PASS and JUJU_ENDPOINT to enable these tests'

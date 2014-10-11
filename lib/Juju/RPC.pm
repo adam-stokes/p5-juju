@@ -27,26 +27,30 @@ An incremented ID based on how many requests performed on the connection.
 Check if a websocket connection exists
 
 =cut
-use Class::Tiny qw(conn is_connected), {request_id => 1};
+use Class::Tiny qw(conn result is_connected done), {
+    request_id => 1,
+};
 
-=method creation_connection
 
-Initiate a websocket connection and stores itself in C<conn> attribute.
-
-=head3 Returns
-
-Websocket connection
-
-=cut
-sub create_connection {
+sub BUILD {
     my $self = shift;
-    die "Already Connected."
-      if $self->is_connected and $self->is_authenticated;
     my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
-    $self->is_connected(1);
     $self->conn($client->connect($self->endpoint)->recv);
-}
+    $self->is_connected(1);
 
+    $self->conn->on(
+        each_message => sub {
+            my ($conn, $message) = @_;
+            my $body = decode_json($message->decoded_body);
+            if (defined($body->{Response})) {
+                $self->done->send($body->{Response});
+            }
+            else {
+                die 'Error: ' . $message->decoded_body;
+            }
+        }
+    );
+}
 
 =method close
 
@@ -58,40 +62,26 @@ sub close {
     $self->conn->close;
 }
 
-=method call
+=method call ($params, $cb)
 
 Sends event to juju api server
-
-=head3 Takes
-
-C<params> - Hash of parameters needed to query Juju API
-
-C<cb> - (optional) callback routine
-
-=head3 Returns
-
-Result of RPC Response
 
 =cut
 sub call {
     my ($self, $params, $cb) = @_;
-    my $done = AnyEvent->condvar;
+
+    $self->done(AnyEvent->condvar);
 
     # Increment request id
     $self->request_id($self->request_id + 1);
     $params->{RequestId} = $self->request_id;
     $self->conn->send(encode_json($params));
-    $self->conn->on(
-        each_message => sub {
-            $done->send(decode_json(pop->decoded_body)->{Response});
-        }
-    );
 
     # non-blocking
-    return $cb->($done->recv) if $cb;
+    return $cb->($self->done->recv) if $cb;
 
     # blocking
-    return $done->recv;
+    return $self->done->recv;
 }
 
 1;
