@@ -9,13 +9,17 @@ use Data::Dumper;
 $Data::Dumper::Indent = 1;
 
 my $client = Juju::Environment->new(
-    endpoint => 'wss://10.0.3.1:17070/',
-    password => $ENV{'JUJU_PASS'}
-    ? $ENV{'JUJU_PASS'}
-    : 'bac2d0de80a99bb499c442326a617788'
+    endpoint => $ENV{JUJU_ENDPOINT},
+    password => $ENV{JUJU_PASS}
 );
 $client->login;
-my $_info = $client->info;
-print Dumper($_info);
+print Dumper($client->info);
+
+my $watcher = $client->get_watcher;
+print Dumper($watcher);
+
+$client->get_watched_tasks($watcher->{AllWatcherId},
+    sub { my $val = shift; print Dumper($val); });
+print Dumper($client->status);
 
 $client->close;

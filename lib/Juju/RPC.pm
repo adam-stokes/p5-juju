@@ -27,7 +27,7 @@ An incremented ID based on how many requests performed on the connection.
 Check if a websocket connection exists
 
 =cut
-use Class::Tiny qw(conn request_id is_connected);
+use Class::Tiny qw(conn is_connected), {request_id => 1};
 
 =method creation_connection
 
@@ -86,12 +86,12 @@ sub call {
             $done->send(decode_json(pop->decoded_body)->{Response});
         }
     );
-    if (ref($cb) eq "CODE") {
-        $cb->($done->recv);
-    }
-    else {
-        return $done->recv;
-    }
+
+    # non-blocking
+    return $cb->($done->recv) if $cb;
+
+    # blocking
+    return $done->recv;
 }
 
 1;
