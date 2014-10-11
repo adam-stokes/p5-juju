@@ -1,19 +1,15 @@
 # NAME
 
-Juju - Non-blocking Perl bindings for http://juju.ubuntu.com/
+Juju - Non-blocking Perl bindings for https://juju.ubuntu.com/
 
 # VERSION
 
-version 1.0
+version 1.1
 
 # DESCRIPTION
 
-Pure perl non-blocking bindings for Juju. See [Juju::Manual::Quickstart](https://metacpan.org/pod/Juju::Manual::Quickstart) for more information.
-
-# NOTICE
-
-Code is **alpha quality** and subject to change. API breakage will occur
-until this project reaches 1.x version.
+Pure perl non-blocking bindings for Juju. See
+[Juju::Manual::Quickstart](https://metacpan.org/pod/Juju::Manual::Quickstart) for more information.
 
 # AUTHOR
 

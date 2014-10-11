@@ -14,7 +14,7 @@ use strict;
 use warnings;
 use HTTP::Tiny;
 use JSON::PP;
-use Devel::Deprecate 'deprecate';
+use YAML::Tiny qw(Dump);
 use parent 'Juju::RPC';
 
 =attr endpoint
@@ -136,28 +136,6 @@ sub reconnect {
     $self->request_id = 1;
 }
 
-=method info
-
-(Deprecated) Environment information
-
-B<Returns> - Juju environment state
-
-=cut
-
-sub info {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-    my $params = {"Type" => "Client", "Request" => "EnvironmentInfo"};
-
-    deprecate(
-              reason => 'Please use environment_info() for getting environment',
-              die => '2014-12-01'
-             );
-
-    return $self->environment_info unless $cb;
-    return $self->environment_info($cb);
-}
-
 =method environment_info
 
 Return Juju Environment information
@@ -168,6 +146,112 @@ sub environment_info {
     my $self = shift;
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {"Type" => "Client", "Request" => "EnvironmentInfo"};
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method environment_uuid
+
+Environment UUID from client connection
+
+=cut
+sub environment_uuid {
+    my $self = shift;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {"Type" => "Client", "Request" => "EnvironmentUUID"};
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+
+=method environment_unset ($items)
+
+Environment UUID from client connection
+
+=cut
+
+sub environment_unset {
+    my ($self, $items) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "EnvironmentUnset",
+        "Params"  => $items
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method find_tools ($major_version, $minor_version, $series, $arch)
+
+Returns list containing all tools matching specified parameters
+
+C<major_verison> - major version int
+C<minor_verison> - minor version int
+C<series> - Distribution series (eg, trusty)
+C<arch> - architecture
+
+=cut
+sub find_tools {
+    my ($self, $major, $minor, $series, $arch) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "EnvironmentUnset",
+        "Params"  => {
+            MajorVersion => int($major),
+            MinorVersion => int($minor),
+            Arch         => $arch,
+            Series       => $series
+        }
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+
+=method agent_version
+
+Returns version of api server
+
+=cut
+sub agent_version {
+    my $self = shift;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {"Type" => "Client", "Request" => "AgentVersion"};
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method abort_current_upgrade
+
+Aborts and archives the current upgrade synchronization record, if any.
+
+=cut
+sub abort_current_upgrade {
+    my $self = shift;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {"Type" => "Client", "Request" => "AbortCurrentUpgrade"};
 
     # block
     return $self->call($params) unless $cb;
@@ -189,6 +273,26 @@ sub status {
     my $params = {
         "Type"   => "Client",
         "Request" => "FullStatus"
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method client_api_host_ports
+
+Returns network hostports for each api server
+
+=cut
+sub client_api_host_ports {
+    my $self   = shift;
+    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"   => "Client",
+        "Request" => "APIHostPorts"
     };
 
     # block
@@ -284,13 +388,13 @@ sub get_charm {
     return $self->call($params, $cb);
 }
 
-=method get_env_constraints
+=method get_environment_constraints
 
 Get environment constraints
 
 =cut
 
-sub get_env_constraints {
+sub get_environment_constraints {
     my $self   = shift;
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
@@ -306,7 +410,7 @@ sub get_env_constraints {
 
 }
 
-=method set_env_constraints ($constraints)
+=method set_environment_constraints ($constraints)
 
 Set environment constraints
 
@@ -314,7 +418,7 @@ C<constraints> - environment constraints
 
 =cut
 
-sub set_env_constraints {
+sub set_environment_constraints {
     my ($self, $constraints) = @_;
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
@@ -330,11 +434,13 @@ sub set_env_constraints {
     return $self->call($params, $cb);
 }
 
-=method get_env_config
+=method environment_get
+
+Returns all environment settings
 
 =cut
 
-sub get_env_config {
+sub environment_get {
     my $self   = shift;
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
@@ -349,13 +455,13 @@ sub get_env_config {
     return $self->call($params, $cb);
 }
 
-=method set_env_config ($config)
+=method environment_set ($config)
 
 C<config> - Config parameters
 
 =cut
 
-sub set_env_config {
+sub environment_set {
     my ($self, $config) = @_;
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
@@ -379,14 +485,11 @@ C<series> - OS series (i.e precise)
 
 C<constraints> - machine constraints
 
-C<machine_spec> - not sure yet..
+C<machine_spec> - specific machine
 
-C<parent_id> - not sure yet..
+C<parent_id> - id of parent
 
-C<container_type> - uh..
-
-Note: Not quite right as I've no idea wtf its doing yet, need to read
-the specs.
+C<container_type> - kvm or lxc container type
 
 =cut
 
@@ -430,6 +533,29 @@ sub add_machines {
 
     # non-block
     return $self->call($params, $cb);
+}
+
+
+=method destroy_environment
+
+Destroys Juju environment
+
+=cut
+
+sub destroy_environment {
+    my $self   = shift;
+    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "DestroyEnvironment"
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+
 }
 
 =method destroy_machines
@@ -629,15 +755,18 @@ B<Returns> - Hash of information on service
 
 sub get_service {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceGet",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceGet",
-            "Params"  => {"ServiceName" => $service_name}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
 =method get_config ($service_name)
@@ -655,32 +784,35 @@ sub get_config {
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
 
     my $svc = $self->get_service($service_name);
-    return $svc->{Config};
+    return $svc->{Config} unless $cb;
+    return $cb->($svc->{Config});
 }
 
-=method get_constraints ($service_name)
+=method get_service_constraints ($service_name)
+
+Returns the constraints for the given service.
 
 C<service_name> - Name of service
 
 =cut
 
-sub get_constraints {
+sub get_service_constraints {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "GetServiceConstraints",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "GetServiceConstraints",
-            "Params"  => {"ServiceName" => $service_name}
-        },
-        sub {
-            my $res = shift;
-            return $res->{Constraints};
-        }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method set_constraints ($service_name, $constraints)
+=method set_service_constraints ($service_name, $constraints)
 
 C<service_name> - Name of service
 
@@ -688,50 +820,69 @@ C<constraints> - Service constraints
 
 =cut
 
-sub set_constraints {
+sub set_service_constraints {
     my ($self, $service_name, $constraints) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "SetServiceConstraints",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "Constraints" => $self->_prepare_constraints($constraints)
+        }
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "SetServiceConstraints",
-            "Params"  => {
-                "ServiceName" => $service_name,
-                "Constraints" => $self->_prepare_constraints($constraints)
-            }
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method update_service ($service_name, $charm_url, $force_charm_url, $min_units, $settings, $constraints)
+=method share_environment($users)
 
-Update a service
+Allows the given users access to the environment.
 
 =cut
+sub share_environment {
+    my ($self, $users) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ShareEnvironment",
+        "Params"  => $users
+    };
 
-sub update_service {
-    my ($self, $service_name, $charm_url, $force_charm_url,
-        $min_units, $settings, $constraints)
-      = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    # block
+    return $self->call($params) unless $cb;
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "SetServiceConstraints",
-            "Params"  => {
-                "ServiceName"     => $service_name,
-                "CharmUrl"        => $charm_url,
-                "MinUnits"        => $min_units,
-                "SettingsStrings" => $settings,
-                "Constraints"     => $self->_prepare_constraints($constraints)
-            }
-        },
-        sub { my $res = shift; return $res }
-    );
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method destroy_service ($service_name)
+=method unshare_environment($users)
+
+Removes the given users access to the environment.
+
+=cut
+sub unshare_environment {
+    my ($self, $users) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "UnshareEnvironment",
+        "Params"  => $users
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+
+=method service_destroy ($service_name)
 
 Destroys a service
 
@@ -739,20 +890,23 @@ C<service_name> - name of service
 
 =cut
 
-sub destroy_service {
+sub service_destroy {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceDestroy",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceDestroy",
-            "Params"  => {"ServiceName" => $service_name}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method expose ($service_name)
+=method service_expose ($service_name)
 
 Expose service
 
@@ -760,19 +914,24 @@ C<service_name> - Name of service
 
 =cut
 
-sub expose {
+sub service_expose {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceExpose",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceExpose",
-            "Params"  => {"ServiceName" => $service_name}
-        }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method unexpose ($service_name)
+
+=method service_unexpose ($service_name)
 
 Unexpose service
 
@@ -780,184 +939,284 @@ C<service_name> - Name of service
 
 =cut
 
-sub unexpose {
+sub service_unexpose {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceUnexpose",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceUnexpose",
-            "Params"  => {"ServiceName" => $service_name}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method valid_relation_names
+=method service_charm_relations
 
 All possible relation names of a service
 
 =cut
 
-sub valid_relation_names {
+sub service_charm_relations {
     my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceCharmRelations",
+        "Params"  => {"ServiceName" => $service_name}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceCharmRelations",
-            "Params"  => {"ServiceName" => $service_name}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method add_units
+=method add_service_units ($service_name, $num_units)
+
+Adds given number of units to a service
 
 =cut
 
-sub add_units {
+sub add_service_units {
     my ($self, $service_name, $num_units) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     $num_units = 1 unless $num_units;
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "AddServiceUnits",
-            "Params"  => {
-                "ServiceName" => $service_name,
-                "NumUnits"    => $num_units
-            }
-        },
-        sub {
-            my $res = shift;
-            return $res;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "AddServiceUnits",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "NumUnits"    => $num_units
         }
-    );
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method add_unit
+=method add_service_unit ($service_name, $machine_spec)
+
+Add unit to specific machine
 
 =cut
 
-sub add_unit {
+sub add_service_unit {
     my ($self, $service_name, $machine_spec) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     $machine_spec = 0 unless $machine_spec;
     my $params = {
-        "ServiceName" => $service_name,
-        "NumUnits"    => 1
+        "Type"    => "Client",
+        "Request" => "AddServiceUnits",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "NumUnits"    => 1
+        }
     };
 
     if ($machine_spec) {
-        $params->{ToMachineSpec} = $machine_spec;
+        $params->{Params}->{ToMachineSpec} = $machine_spec;
     }
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "AddServiceUnits",
-            "Params"  => $params
-        },
-        sub { my $res = shift; return $res }
-    );
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
+=method destroy_service_units ($unit_names)
 
-=method remove_unit
+Decreases number of units dedicated to a service
 
 =cut
 
-sub remove_unit {
+sub destroy_service_units {
     my ($self, $unit_names) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "DestroyServiceUnits",
+        "Params"  => {"UnitNames" => $unit_names}
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "DestroyServiceUnits",
-            "Params"  => {"UnitNames" => $unit_names}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method resolved
+=method resolved ($unit_name, $retry)
+
+Clear errors on unit
+
+C<unit_name> - id of unit (eg, mysql/0)
+C<retry> - bool
 
 =cut
 
 sub resolved {
     my ($self, $unit_name, $retry) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     $retry = 0 unless $retry;
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "Resolved",
-            "Params"  => {
-                "UnitName" => $unit_name,
-                "Retry"    => $retry
-            }
-        },
-        sub { my $res = shift; return $res }
-    );
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "Resolved",
+        "Params"  => {
+            "UnitName" => $unit_name,
+            "Retry"    => $retry
+        }
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
+=method run
 
-=method get_public_address
+Not implemented yet.
 
 =cut
 
-sub get_public_address {
-    my ($self, $target) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "PublicAddress",
-            "Params"  => {"Target" => $target}
-        },
-        sub { my $res = shift; return $res; }
-    );
-}
-
-=method set_annotation
+=method set_annotations
 
 Set annotations on entity, valid types are C<service>, C<unit>,
 C<machine>, C<environment>
 
 =cut
 
-sub set_annotation {
+sub set_annotations {
     my ($self, $entity, $entity_type, $annotation) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "SetAnnotations",
+        "Params"  => {
+            "Tag"   => sprintf("%s-%s", $entity_type, $entity =~ s|/|-|g),
+            "Pairs" => $annotation
+        }
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "SetAnnotations",
-            "Params"  => {
-                "Tag"   => sprintf("%s-%s", $entity_type, $entity =~ s|/|-|g),
-                "Pairs" => $annotation
-            }
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method get_annotation
+=method get_annotations ($entity, $entity_type)
+
+Returns annotations that have been set on the given entity.
 
 =cut
 
-sub get_annotation {
+sub get_annotations {
     my ($self, $entity, $entity_type) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "GetAnnotations",
+        "Params"  => {
+            "Tag" => "Tag" =>
+              sprintf("%s-%s", $entity_type, $entity =~ s|/|-|g)
+        }
+    };
 
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "GetAnnotations",
-            "Params" =>
-              {"Tag" => sprintf("%s-%s", $entity_type, $entity =~ s|/|-|g)}
-        },
-        sub { my $res = shift; return $res }
-    );
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
+
+=method private_address($target)
+
+Get private address of machine or unit
+
+  $self->private_address('1');  # get address of machine 1
+  $self->private_address('mysql/0');  # get address of first unit of mysql
+
+=cut
+sub private_address {
+    my ($self, $target) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "PrivateAddress",
+        "Params"  => {"Target" => $target}
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method public_address($target)
+
+Returns the public address of the specified machine or unit. For a
+machine, target is an id not a tag.
+
+  $self->public_address('1');  # get address of machine 1
+  $self->public_address('mysql/0');  # get address of first unit of mysql
+
+=cut
+sub public_address {
+    my ($self, $target) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "PublicAddress",
+        "Params"  => {"Target" => $target}
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
+=method service_set_yaml ($service, $yaml)
+
+Sets configuration options on a service given options in YAML format.
+
+=cut
+sub service_set_yaml {
+    my ($self, $service, $yaml) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "PublicAddress",
+        "Params"  => {
+            "ServiceName" => $service,
+            "Config"      => Dump($yaml)
+        }
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
+
 
 1;

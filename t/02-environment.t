@@ -13,7 +13,7 @@ diag("JUJU Environment tests");
 
 use_ok('Juju');
 
-my $juju_pass = $ENV{JUJU_PASS};
+my $juju_pass     = $ENV{JUJU_PASS};
 my $juju_endpoint = $ENV{JUJU_ENDPOINT};
 
 my $juju = Juju->new(endpoint => $juju_endpoint, password => $juju_pass);
@@ -27,8 +27,27 @@ $juju->environment_info(
     }
 );
 
-my $info = $juju->environment_info;
-ok(defined($info->{UUID}), "Blocking info works.");
+$juju->client_api_host_ports(
+    sub {
+        my $val = shift;
+        ok(defined($val->{Servers}), "Non block apihosts");
+    }
+);
+
+$juju->agent_version(
+    sub {
+        my $val = shift;
+        ok(defined($val->{Version}), "Non block agent version");
+    }
+);
+
+$juju->abort_current_upgrade(
+    sub {
+        my $val = shift;
+        ok(ref($val) eq 'HASH', 'Got a empty hash on abort current upgrade');
+    }
+);
+
 
 $juju->status(
     sub {
@@ -37,17 +56,12 @@ $juju->status(
     }
 );
 
-my $status = $juju->status;
-ok(defined($status->{Machines}), "block status works");
-
-$juju->get_env_constraints(
+$juju->get_environment_constraints(
     sub {
         my $val = shift;
         ok(defined($val->{Constraints}), "non block env constraints work");
     }
 );
-my $env_constraints = $juju->get_env_constraints;
-ok(defined($env_constraints->{Constraints}), 'block env constraints work');
 
 # WATCHERS --------------------------------------------------------------------
 $juju->get_watcher(
@@ -55,11 +69,9 @@ $juju->get_watcher(
         my $val = shift;
         ok(defined($val->{AllWatcherId}), "non block watchers works");
     }
-
 );
-my $watcher = $juju->get_watcher;
-ok(defined($watcher->{AllWatcherId}), "block watchers work");
 
+my $watcher = $juju->get_watcher;
 $juju->get_watched_tasks(
     $watcher->{AllWatcherId},
     sub {
@@ -75,7 +87,9 @@ dies_ok {
 
 # CHARMS ----------------------------------------------------------------------
 my $charm_url = $juju->query_cs('mysql');
-ok(defined($charm_url->{charm}->{revision}), "Found charm mysql in charm store");
+ok( defined($charm_url->{charm}->{revision}),
+    "Found charm mysql in charm store"
+);
 
 $juju->close;
 done_testing();

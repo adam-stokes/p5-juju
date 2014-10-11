@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker ;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Non-blocking Perl bindings for http://juju.ubuntu.com/",
+  "ABSTRACT" => "Non-blocking Perl bindings for https://juju.ubuntu.com/",
   "AUTHOR" => "Adam Stokes <adamjs\@cpan.org>",
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0
@@ -23,9 +23,9 @@ my %WriteMakefileArgs = (
     "AnyEvent" => 0,
     "AnyEvent::WebSocket::Client" => 0,
     "Class::Tiny" => 0,
-    "Devel::Deprecate" => 0,
     "HTTP::Tiny" => 0,
     "JSON::PP" => 0,
+    "YAML::Tiny" => 0,
     "parent" => 0,
     "strict" => 0,
     "warnings" => 0
@@ -45,7 +45,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::NoTabs" => 0
   },
-  "VERSION" => "1.0",
+  "VERSION" => "1.1",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -57,7 +57,6 @@ my %FallbackPrereqs = (
   "AnyEvent::WebSocket::Client" => 0,
   "Class::Tiny" => 0,
   "DDP" => 0,
-  "Devel::Deprecate" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
   "HTTP::Tiny" => 0,
@@ -72,6 +71,7 @@ my %FallbackPrereqs = (
   "Test::Kwalitee" => 0,
   "Test::More" => 0,
   "Test::NoTabs" => 0,
+  "YAML::Tiny" => 0,
   "parent" => 0,
   "strict" => 0,
   "warnings" => 0

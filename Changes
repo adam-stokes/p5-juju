@@ -3,8 +3,28 @@ Changes from 2013-10-11 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.0 at 2014-10-11 03:11:27 +0000
+version 1.1 at 2014-10-11 20:08:22 +0000
 ----------------------------------------
+
+  Change: d43bea658e72ac4e5f464df4fdc2e4bf98728b7b
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-11 14:20:16 +0000
+
+    extend tests
+
+    more api updates
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 1.0 at 2014-10-11 03:11:47 +0000
+----------------------------------------
+
+  Change: 955d4b660b210abdc73066e608a6f3743e1e54c4
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-10 23:11:47 +0000
+
+    v1.0 
 
   Change: 1049ac5d9f668293e2ab23a19ab368da19d6ac07
   Author: Adam Stokes <adam.stokes@ubuntu.com>
