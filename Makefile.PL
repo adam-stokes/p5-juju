@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker ;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Non-blocking Perl bindings for https://juju.ubuntu.com/",
+  "ABSTRACT" => "Pure Perl bindings for Juju",
   "AUTHOR" => "Adam Stokes <adamjs\@cpan.org>",
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0
@@ -39,13 +39,14 @@ my %WriteMakefileArgs = (
     "IPC::Open3" => 0,
     "Pod::Elemental::Transformer::List" => 0,
     "Pod::Weaver::Plugin::Encoding" => 0,
+    "Pod::Weaver::Section::SeeAlso" => 0,
     "Test::Compile" => 0,
     "Test::Exception" => 0,
     "Test::Kwalitee" => 0,
     "Test::More" => 0,
     "Test::NoTabs" => 0
   },
-  "VERSION" => "1.1",
+  "VERSION" => "1.2",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -66,6 +67,7 @@ my %FallbackPrereqs = (
   "JSON::PP" => 0,
   "Pod::Elemental::Transformer::List" => 0,
   "Pod::Weaver::Plugin::Encoding" => 0,
+  "Pod::Weaver::Section::SeeAlso" => 0,
   "Test::Compile" => 0,
   "Test::Exception" => 0,
   "Test::Kwalitee" => 0,

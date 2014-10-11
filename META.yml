@@ -1,5 +1,5 @@
 ---
-abstract: 'Non-blocking Perl bindings for https://juju.ubuntu.com/'
+abstract: 'Pure Perl bindings for Juju'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
@@ -11,6 +11,7 @@ build_requires:
   IPC::Open3: '0'
   Pod::Elemental::Transformer::List: '0'
   Pod::Weaver::Plugin::Encoding: '0'
+  Pod::Weaver::Section::SeeAlso: '0'
   Test::Compile: '0'
   Test::Exception: '0'
   Test::Kwalitee: '0'
@@ -38,4 +39,4 @@ requires:
   warnings: '0'
 resources:
   repository: git://github.com/battlemidget/p5-juju.git
-version: '1.1'
+version: '1.2'

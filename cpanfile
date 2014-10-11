@@ -17,6 +17,7 @@ on 'test' => sub {
   requires "IPC::Open3" => "0";
   requires "Pod::Elemental::Transformer::List" => "0";
   requires "Pod::Weaver::Plugin::Encoding" => "0";
+  requires "Pod::Weaver::Section::SeeAlso" => "0";
   requires "Test::Compile" => "0";
   requires "Test::Exception" => "0";
   requires "Test::Kwalitee" => "0";
