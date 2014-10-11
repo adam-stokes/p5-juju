@@ -86,7 +86,12 @@ sub call {
             $done->send(decode_json(pop->decoded_body)->{Response});
         }
     );
-    $cb->($done->recv);
+    if (ref($cb) eq "CODE") {
+        $cb->($done->recv);
+    }
+    else {
+        return $done->recv;
+    }
 }
 
 1;

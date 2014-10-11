@@ -34,4 +34,4 @@ requires:
   warnings: '0'
 resources:
   repository: git://github.com/battlemidget/p5-juju
-version: '0.8'
+version: '0.9'

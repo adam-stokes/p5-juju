@@ -114,13 +114,7 @@ B<Returns> - Juju environment state
 
 sub info {
     my $self = shift;
-    $self->call(
-        {"Type" => "Client", "Request" => "EnvironmentInfo"},
-        sub {
-            my $res = shift;
-            return $res;
-        }
-    );
+    $self->call({"Type" => "Client", "Request" => "EnvironmentInfo"});
 }
 
 
