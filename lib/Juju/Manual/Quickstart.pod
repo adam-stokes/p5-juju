@@ -7,7 +7,11 @@ package Juju::Manual::Quickstart;
 Installation is handled through cpanm and you can point directly to
 the github repository:
 
-    cpanm git@github.com:battlemidget/perl-juju.git
+    cpanm git@github.com:battlemidget/p5-juju.git
+
+Or install from cpan
+
+    cpanm Juju
 
 =head1 INTRO
 
@@ -28,18 +32,26 @@ To get started initialize the Juju class:
     use Juju;
 
     # Open connection over the websocket protocol
-    my $juju = Juju->new(endpoint => 'wss://192.168.122.16:17070', password => '8fdsaf0fda');
+    my $juju = Juju->new(endpoint => 'wss://192.168.122.16:17070',
+                         password => '8fdsaf0fda');
     $juju->login;
-    my $juju_info = $juju->info;
-    print $juju_info->{UUID};
+    $juju->status(
+      sub {
+        my $status = shift;
+        print $status->{UUID};
+      }
+    );
 
     # Close the connection
     $juju->close;
 
 The password is found in the B<~/.juju/environments/'env'.jenv> under
-C<admin-secret>.
+C<password>.
 
-There is a B<port (17070)> for accessing the machine resources.
+There is a B<port (17070)> for accessing the machine resources. To see what state
+servers are available to you run:
+
+    $ juju api-endpoints
 
 =cut
 
