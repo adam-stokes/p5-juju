@@ -3,14 +3,17 @@ Changes from 2013-10-11 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.0 at 2014-10-11 03:01:50 +0000
+version 1.0 at 2014-10-11 03:11:27 +0000
 ----------------------------------------
 
-  Change: a71138dad0081d0d1d332ae284f7c849d750993e
+  Change: 1049ac5d9f668293e2ab23a19ab368da19d6ac07
   Author: Adam Stokes <adam.stokes@ubuntu.com>
-  Date : 2014-10-10 21:34:58 +0000
+  Date : 2014-10-10 23:10:13 +0000
 
-    tests
+    Updates
+
+    - More support for blocking/nonblocking routines - More tests -
+    query_cs helper for querying charmstore
 
     Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
