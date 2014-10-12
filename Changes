@@ -2,9 +2,27 @@
 Changes from 2013-10-12 00:00:00 +0000 to present.
 ==================================================
 
+------------------------------------------
+version 1.5.1 at 2014-10-12 20:22:53 +0000
+------------------------------------------
+
+  Change: 15738ae627c5ab4442236ba2abe6678a50b206d0
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 16:22:23 +0000
+
+    Add check for charm series format in deploy
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
 ----------------------------------------
-version 1.5 at 2014-10-12 19:26:13 +0000
+version 1.5 at 2014-10-12 19:26:23 +0000
 ----------------------------------------
+
+  Change: e84a0ed8a6b6f171f160f0af8156fa6735bb5a86
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 15:26:23 +0000
+
+    v1.5 
 
   Change: 8608a50655f15532afdfbb7ea555096b39e88f92
   Author: Adam Stokes <adam.stokes@ubuntu.com>

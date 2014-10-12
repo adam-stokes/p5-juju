@@ -58,7 +58,7 @@ use Class::Tiny qw(password is_authenticated), {
 };
 
 
-=method _prepare_constraints ($constraints)
+=method _prepare_constraints
 
 Makes sure cpu-cores, cpu-power, mem are integers
 
@@ -709,7 +709,7 @@ B<Params>
 
 =for :list
 * C<charm>
-charm to deploy
+charm to deploy, can be in the format of B<series/charm> if needing to specify a different series
 * C<service_name>
 name of service to set. can be same name as charm, however, recommended to pick something unique and identifiable.
 * C<num_units>
@@ -739,7 +739,17 @@ sub deploy {
         Request => "ServiceDeploy",
         Params  => {ServiceName => $service_name}
     };
-    my $_charm_url = $self->util->query_cs($charm);
+
+    # Check for series format
+    my (@charm_args) = $charm =~ /(\w+)\/(\w+)/i;
+    my $_charm_url = undef;
+    if (scalar @charm_args == 2) {
+        $_charm_url = $self->util->query_cs($charm_args[1], $charm_args[0]);
+    }
+    else {
+        $_charm_url = $self->util->query_cs($charm);
+    }
+
     $params->{Params}->{CharmUrl} = $_charm_url->{charm}->{url};
     $num_units = 1 unless $num_units;
     $params->{Params}->{NumUnits} = $num_units;
@@ -1376,7 +1386,7 @@ sub private_address {
     return $self->call($params, $cb);
 }
 
-=method public_address($target)
+=method public_address
 
 Returns the public address of the specified machine or unit. For a
 machine, target is an id not a tag.
