@@ -33,7 +33,6 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
-    "DDP" => 0,
     "ExtUtils::MakeMaker" => 0,
     "File::Spec" => 0,
     "IO::Handle" => 0,
@@ -60,7 +59,6 @@ my %FallbackPrereqs = (
   "AnyEvent::WebSocket::Client" => 0,
   "Carp" => 0,
   "Class::Tiny" => 0,
-  "DDP" => 0,
   "Data::Validate::Type" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,

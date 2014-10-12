@@ -8,7 +8,7 @@ use Test::Exception;
 plan skip_all =>
   'must export JUJU_PASS and JUJU_ENDPOINT to enable these tests'
   unless $ENV{JUJU_PASS} && $ENV{JUJU_ENDPOINT};
-diag("JUJU Machine administration");
+diag("JUJU Service Deploy");
 
 use_ok('Juju');
 
@@ -18,15 +18,11 @@ my $juju_endpoint = $ENV{JUJU_ENDPOINT};
 my $juju = Juju->new(endpoint => $juju_endpoint, password => $juju_pass);
 $juju->login;
 
-ok($juju->add_machine());
+dies_ok {
+    $juju->deploy
+}
+'Dies if no charm or service name';
 
-$juju->add_machine(
-    'trusty',
-    sub {
-        my $val = shift->{Response};
-        my $machine = $val->{Machines}->[0];
-        ok(!defined($machine->{Error}), "Add machine worked.");
-    }
-);
+ok($juju->deploy('mysql', 'trusty/mysql'), 'Deploy works');
 
 done_testing();

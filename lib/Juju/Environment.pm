@@ -653,38 +653,49 @@ sub remove_relation {
     return $self->call($params, $cb);
 }
 
-=method deploy ($service_name, $charm_url, $num_units, $config_yaml, $constraints, $machine_spec)
+=method deploy ($charm, $service_name, $num_units, $config_yaml, $constraints, $machine_spec)
 
 Deploys a charm to service
 
 =cut
 
 sub deploy {
-    my ($self, $service_name, $charm_url, $num_units, $config_yaml,
-        $constraints, $machine_spec)
-      = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $self         = shift;
+    my $charm        = shift // die "Requires charm";
+    my $service_name = shift // die "Requires service name";
+    my $cb           = ref $_[-1] eq 'CODE' ? pop : undef;
 
-    my $params = {ServiceName => $service_name};
+    # parse additional arguments
+    my ($num_units, $config_yaml, $constraints, $machine_spec) = @_;
+
+    my $params = {
+        Type    => "Client",
+        Request => "ServiceDeploy",
+        Params  => {ServiceName => $service_name}
+    };
+    my $_charm_url = $self->query_cs($charm);
+    $params->{Params}->{CharmUrl} = $_charm_url->{charm}->{url};
     $num_units = 1 unless $num_units;
-    $params->{NumUnits}   = $num_units;
-    $params->{ConfigYAML} = $config_yaml;
-    my $svc_constraints;
-    if ($constraints) {
-        $params->{Constraints} = $self->_prepare_constraints($constraints);
+    $params->{Params}->{NumUnits} = $num_units;
+    $params->{Params}->{ConfigYAML} =
+      defined($config_yaml) ? $config_yaml : "";
+
+    if (defined($constraints) and is_hashref($constraints)) {
+        $params->{Params}->{Constraints} =
+          $self->_prepare_constraints($constraints);
     }
     if ($machine_spec) {
-        $params->{ToMachineSpec} = $machine_spec;
+        $params->{Params}->{ToMachineSpec} = "$machine_spec";
     }
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceDeploy",
-            "Params"  => $params
-        }
-    );
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method set_config ($service_name, $config)
+=method service_set ($service_name, $config)
 
 Set's configuration parameters for unit
 
@@ -694,23 +705,27 @@ C<config> - hash of config parameters
 
 =cut
 
-sub set_config {
+sub service_set {
     my ($self, $service_name, $config) = @_;
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
 
     die "Not a hash" unless ref $config eq 'HASH';
-    return $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceSet",
-            "Params"  => {
-                "ServiceName" => $service_name,
-                "Options"     => $config
-            }
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceSet",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "Options"     => $config
         }
-    );
+    };
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method unset_config ($service_name, $config_keys)
+=method service_unset ($service_name, $config_keys)
 
 Unsets configuration value for service to restore charm defaults
 
@@ -724,18 +739,23 @@ sub unset_config {
     my ($self, $service_name, $config_keys) = @_;
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
 
-    return $self->call(
+    my $params = 
         {   "Type"    => "Client",
             "Request" => "ServiceUnset",
             "Params"  => {
                 "ServiceName" => $service_name,
                 "Options"     => $config_keys
             }
-        }
-    );
+        };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method set_charm ($service_name, $charm_url, $force)
+=method service_set_charm ($service_name, $charm_url, $force)
 
 Sets charm url for service
 
@@ -747,22 +767,27 @@ C<charm_url> - charm location (ie. cs:precise/wordpress)
 
 sub set_charm {
     my ($self, $service_name, $charm_url, $force) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     $force = 0 unless $force;
-    $self->call(
-        {   "Type"    => "Client",
-            "Request" => "ServiceSetCharm",
-            "Params"  => {
-                "ServiceName" => $service_name,
-                "CharmUrl"    => $charm_url,
-                "Force"       => $force
-            }
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceSetCharm",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "CharmUrl"    => $charm_url,
+            "Force"       => $force
         }
-    );
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
 }
 
-=method get_service ($service_name)
+=method service_get ($service_name)
 
 Returns information on charm, config, constraints, service keys.
 
@@ -772,7 +797,7 @@ B<Returns> - Hash of information on service
 
 =cut
 
-sub get_service {
+sub service_get {
     my ($self, $service_name) = @_;
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
@@ -802,7 +827,7 @@ sub get_config {
     my ($self, $service_name) = @_;
     my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
 
-    my $svc = $self->get_service($service_name);
+    my $svc = $self->service_get($service_name);
     return $svc->{Config} unless $cb;
     return $cb->($svc->{Config});
 }
