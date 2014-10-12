@@ -40,4 +40,4 @@ requires:
   warnings: '0'
 resources:
   repository: git://github.com/battlemidget/p5-juju.git
-version: 1.5.1
+version: 1.5.2
