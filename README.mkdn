@@ -1,6 +1,6 @@
 # NAME
 
-Juju - Pure Perl bindings for Juju
+Juju - Perl bindings for Juju
 
 # VERSION
 
@@ -8,7 +8,7 @@ version 1.5
 
 # DESCRIPTION
 
-Pure perl non-blocking bindings for Juju. See
+Perl non-blocking/blocking bindings for Juju. See
 [Juju::Manual::Quickstart](https://metacpan.org/pod/Juju::Manual::Quickstart) for more information.
 
 # AUTHOR

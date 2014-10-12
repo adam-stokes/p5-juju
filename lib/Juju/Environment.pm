@@ -658,7 +658,7 @@ More information on deploying can be found by running C<juju help deploy>.
 sub deploy {
     my $self = shift;
     my ($charm, $service_name) =
-      validate_pos({type => SCALAR}, {type => SCALAR});
+      validate_pos(@_, {type => SCALAR}, {type => SCALAR});
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     # parse additional arguments

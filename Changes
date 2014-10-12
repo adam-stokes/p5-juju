@@ -3,8 +3,24 @@ Changes from 2013-10-12 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.5 at 2014-10-12 18:43:19 +0000
+version 1.5 at 2014-10-12 18:51:07 +0000
 ----------------------------------------
+
+  Change: 7c96899ba70504c91b149b9e73c3b5d4a1f64e62
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 14:47:48 +0000
+
+    update method documentation
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: b7a8a66f2eaed8da1fc79889796d79c3730a7f7f
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 14:47:14 +0000
+
+    Add top level manual pod
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
   Change: fa4a6157e219cee0b54063ea83e2687da9ffa0c7
   Author: Adam Stokes <adam.stokes@ubuntu.com>

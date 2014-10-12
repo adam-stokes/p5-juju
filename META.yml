@@ -1,5 +1,5 @@
 ---
-abstract: 'Pure Perl bindings for Juju'
+abstract: 'Perl bindings for Juju'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
