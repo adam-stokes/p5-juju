@@ -3,8 +3,26 @@ Changes from 2013-10-12 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.3 at 2014-10-12 02:28:59 +0000
+version 1.4 at 2014-10-12 15:55:24 +0000
 ----------------------------------------
+
+  Change: f095a53ecf8cd9ed67a5b085bef5566fa9413b5d
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-11 22:39:52 +0000
+
+    remove old example script
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 1.3 at 2014-10-12 02:29:10 +0000
+----------------------------------------
+
+  Change: 530f44248468cdb40e7756555033e133a83600d9
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-11 22:29:10 +0000
+
+    v1.3 
 
   Change: 5fa54969d3394427cb0c819a94f2fdc915403607
   Author: Adam Stokes <adam.stokes@ubuntu.com>

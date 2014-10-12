@@ -17,7 +17,6 @@ use JSON::PP;
 use YAML::Tiny qw(Dump);
 use Data::Validate::Type qw(:boolean_tests);
 use Carp;
-use DDP;
 use parent 'Juju::RPC';
 
 =attr endpoint
