@@ -3,12 +3,12 @@ Changes from 2013-10-12 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.5 at 2014-10-12 18:33:59 +0000
+version 1.5 at 2014-10-12 18:43:19 +0000
 ----------------------------------------
 
-  Change: 00cba5376f686244afc3091f876ecd7ba7d11614
+  Change: fa4a6157e219cee0b54063ea83e2687da9ffa0c7
   Author: Adam Stokes <adam.stokes@ubuntu.com>
-  Date : 2014-10-12 14:20:06 +0000
+  Date : 2014-10-12 14:34:40 +0000
 
     Export charmstore helpers into a utility class
 

@@ -1,10 +1,10 @@
 package Juju;
 
-# ABSTRACT: Pure Perl bindings for Juju
+# ABSTRACT: Perl bindings for Juju
 
 =head1 DESCRIPTION
 
-Pure perl non-blocking bindings for Juju. See
+Perl non-blocking/blocking bindings for Juju. See
 L<Juju::Manual::Quickstart> for more information.
 
 =head1 SEE ALSO

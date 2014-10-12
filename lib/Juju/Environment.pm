@@ -64,8 +64,6 @@ Makes sure cpu-cores, cpu-power, mem are integers
 
 C<constraints> - hash of service constraints
 
-B<Returns> - an updated constraint hash with any integers set properly.
-
 =cut
 
 sub _prepare_constraints {
@@ -183,8 +181,11 @@ sub environment_unset {
 Returns list containing all tools matching specified parameters
 
 C<major_verison> - major version int
+
 C<minor_verison> - minor version int
+
 C<series> - Distribution series (eg, trusty)
+
 C<arch> - architecture
 
 =cut
@@ -632,17 +633,33 @@ sub remove_relation {
     return $self->call($params, $cb);
 }
 
-=method deploy ($charm, $service_name, $num_units, $config_yaml, $constraints, $machine_spec)
+=method deploy
 
 Deploys a charm to service
+
+B<Params>
+
+C<charm> - charm to deploy
+
+C<service_name> - name of service to set. can be same name as charm, however, recommended to pick something unique and identifiable.
+
+C<num_units> - (optional) number of service units
+
+C<config_yaml> - (optional) A YAML formatted string of charm options
+
+C<constraints> - (optional) Machine hardware constraints
+
+C<machine_spec> - (optional) Machine specification
+
+More information on deploying can be found by running C<juju help deploy>.
 
 =cut
 
 sub deploy {
-    my $self         = shift;
-    my $charm        = shift // die "Requires charm";
-    my $service_name = shift // die "Requires service name";
-    my $cb           = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $self = shift;
+    my ($charm, $service_name) =
+      validate_pos({type => SCALAR}, {type => SCALAR});
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
 
     # parse additional arguments
     my ($num_units, $config_yaml, $constraints, $machine_spec) = @_;
@@ -772,8 +789,6 @@ Returns information on charm, config, constraints, service keys.
 
 C<service_name> - name of service
 
-B<Returns> - Hash of information on service
-
 =cut
 
 sub service_get {
@@ -797,8 +812,6 @@ sub service_get {
 Get service configuration
 
 C<service_name> - name of service
-
-B<Returns> - Hash of service configuration
 
 =cut
 
@@ -1085,6 +1098,7 @@ sub destroy_service_units {
 Clear errors on unit
 
 C<unit_name> - id of unit (eg, mysql/0)
+
 C<retry> - bool
 
 =cut
