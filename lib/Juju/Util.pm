@@ -17,13 +17,17 @@ use JSON::PP;
 use Params::Validate qw(:all);
 use Class::Tiny {series => qr/precise|trusty|utopic/};
 
-=method query_cs ($charm, $series)
+=method query_cs
 
 helper for querying charm store for charm details
 
-C<charm> - name of charm to query
+B<Params>
 
-C<series> - (optional) series to limit to (defaults: trusty)
+=for :list
+* C<charm>
+name of charm to query
+* C<series>
+(optional) series to limit to (defaults: trusty)
 
 =cut
 

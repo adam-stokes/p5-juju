@@ -62,7 +62,11 @@ use Class::Tiny qw(password is_authenticated), {
 
 Makes sure cpu-cores, cpu-power, mem are integers
 
-C<constraints> - hash of service constraints
+B<Params>
+
+=for :list
+* C<constraints>
+hash of service constraints
 
 =cut
 
@@ -154,9 +158,14 @@ sub environment_uuid {
 }
 
 
-=method environment_unset ($items)
+=method environment_unset
 
 Environment UUID from client connection
+
+B<Params>
+
+=for :list
+* C<items>
 
 =cut
 
@@ -176,17 +185,21 @@ sub environment_unset {
     return $self->call($params, $cb);
 }
 
-=method find_tools ($major_version, $minor_version, $series, $arch)
+=method find_tools
 
 Returns list containing all tools matching specified parameters
 
-C<major_verison> - major version int
+B<Params>
 
-C<minor_verison> - minor version int
-
-C<series> - Distribution series (eg, trusty)
-
-C<arch> - architecture
+=for :list
+* C<major_verison>
+major version int
+* C<minor_verison>
+minor version int
+* C<series>
+Distribution series (eg, trusty)
+* C<arch>
+architecture
 
 =cut
 sub find_tools {
@@ -306,9 +319,14 @@ sub get_watcher {
     return $self->call($params, $cb);
 }
 
-=method get_watched_tasks ($watcher_id)
+=method get_watched_tasks
 
 List of all watches for Id
+
+B<Params>
+
+=for :list
+C<watcher_id>
 
 =cut
 
@@ -325,11 +343,15 @@ sub get_watched_tasks {
 }
 
 
-=method add_charm ($charm_url)
+=method add_charm
 
 Add charm
 
-C<charm_url> - url of charm
+B<Params>
+
+=for :list
+* C<charm_url>
+url of charm
 
 =cut
 
@@ -349,11 +371,15 @@ sub add_charm {
     return $self->call($params, $cb);
 }
 
-=method get_charm ($charm_url)
+=method get_charm
 
 Get charm
 
-C<charm_url> - url of charm
+B<Params>
+
+=for :list
+* C<charm_url>
+url of charm
 
 =cut
 
@@ -395,11 +421,15 @@ sub get_environment_constraints {
 
 }
 
-=method set_environment_constraints ($constraints)
+=method set_environment_constraints
 
 Set environment constraints
 
-C<constraints> - environment constraints
+B<Params>
+
+=for :list
+* C<constraints>
+environment constraints
 
 =cut
 
@@ -440,9 +470,15 @@ sub environment_get {
     return $self->call($params, $cb);
 }
 
-=method environment_set ($config)
+=method environment_set
 
-C<config> - Config parameters
+Sets the given key-value pairs in the environment.
+
+B<Params>
+
+=for :list
+* C<config>
+Config parameters
 
 =cut
 
@@ -462,19 +498,23 @@ sub environment_set {
     return $self->call($params, $cb);
 }
 
-=method add_machine ($series, $constraints, $machine_spec, $parent_id, $container_type)
+=method add_machine
 
 Allocate new machine from the iaas provider (i.e. MAAS)
 
-C<series> - OS series (i.e precise)
+B<Params>
 
-C<constraints> - machine constraints
-
-C<machine_spec> - specific machine
-
-C<parent_id> - id of parent
-
-C<container_type> - kvm or lxc container type
+=for :list
+* C<series>
+OS series (i.e precise)
+* C<constraints>
+machine constraints
+* C<machine_spec>
+specific machine
+* C<parent_id>
+id of parent
+* C<container_type>
+kvm or lxc container type
 
 =cut
 
@@ -510,11 +550,15 @@ sub add_machine {
     return $self->add_machines([$params], $cb);
 }
 
-=method add_machines ($machines)
+=method add_machines
 
 Add multiple machines from iaas provider
 
-C<machines> - List of machines
+B<Params>
+
+=for :list
+* C<machines>
+List of machines
 
 =cut
 
@@ -561,6 +605,14 @@ sub destroy_environment {
 
 Destroy machines
 
+B<Params>
+
+=for :list
+* C<machine_ids>
+List of machines
+* C<force>
+Force destroy
+
 =cut
 
 sub destroy_machines {
@@ -589,9 +641,17 @@ sub destroy_machines {
 
 Not implemented
 
-=method add_relation ($endpoint_a, $endpoint_b)
+=method add_relation
 
 Sets a relation between units
+
+B<Params>
+
+=for :list
+* C<endpoint_a>
+First unit endpoint
+* C<endpoint_b>
+Second unit endpoint
 
 =cut
 
@@ -611,9 +671,17 @@ sub add_relation {
     return $self->call($params, $cb);
 }
 
-=method remove_relation ($endpoint_a, $endpoint_b)
+=method remove_relation
 
 Removes relation between endpoints
+
+B<Params>
+
+=for :list
+* C<endpoint_a>
+First unit endpoint
+* C<endpoint_b>
+Second unit endpoint
 
 =cut
 
@@ -639,17 +707,19 @@ Deploys a charm to service
 
 B<Params>
 
-C<charm> - charm to deploy
-
-C<service_name> - name of service to set. can be same name as charm, however, recommended to pick something unique and identifiable.
-
-C<num_units> - (optional) number of service units
-
-C<config_yaml> - (optional) A YAML formatted string of charm options
-
-C<constraints> - (optional) Machine hardware constraints
-
-C<machine_spec> - (optional) Machine specification
+=for :list
+* C<charm>
+charm to deploy
+* C<service_name>
+name of service to set. can be same name as charm, however, recommended to pick something unique and identifiable.
+* C<num_units>
+(optional) number of service units
+* C<config_yaml>
+(optional) A YAML formatted string of charm options
+* C<constraints>
+(optional) Machine hardware constraints
+* C<machine_spec>
+(optional) Machine specification
 
 More information on deploying can be found by running C<juju help deploy>.
 
@@ -691,13 +761,17 @@ sub deploy {
     return $self->call($params, $cb);
 }
 
-=method service_set ($service_name, $config)
+=method service_set
 
 Set's configuration parameters for unit
 
-C<service_name> - name of service (ie. blog)
+B<Params>
 
-C<config> - hash of config parameters
+=for :list
+* C<service_name>
+name of service (ie. blog)
+* C<config>
+hash of config parameters
 
 =cut
 
@@ -721,13 +795,17 @@ sub service_set {
     return $self->call($params, $cb);
 }
 
-=method service_unset ($service_name, $config_keys)
+=method service_unset
 
 Unsets configuration value for service to restore charm defaults
 
-C<service_name> - name of service
+B<Params>
 
-C<config_keys> - hash of config keys to unset
+=for :list
+* C<service_name>
+name of service
+* C<config_keys>
+config items to unset
 
 =cut
 
@@ -751,13 +829,19 @@ sub unset_config {
     return $self->call($params, $cb);
 }
 
-=method service_set_charm ($service_name, $charm_url, $force)
+=method service_set_charm
 
 Sets charm url for service
 
-C<service_name> - name of service
+B<Params>
 
-C<charm_url> - charm location (ie. cs:precise/wordpress)
+=for :list
+* C<service_name>
+name of service
+* C<charm_url> 
+charm location (ie. cs:precise/wordpress)
+* C<force>
+(optional) for setting charm url, overrides any existing charm url already set.
 
 =cut
 
@@ -783,11 +867,14 @@ sub set_charm {
     return $self->call($params, $cb);
 }
 
-=method service_get ($service_name)
+=method service_get
 
 Returns information on charm, config, constraints, service keys.
 
-C<service_name> - name of service
+B<Params>
+
+=for :list
+* C<service_name> - name of service
 
 =cut
 
@@ -807,11 +894,15 @@ sub service_get {
     return $self->call($params, $cb);
 }
 
-=method get_config ($service_name)
+=method get_config
 
 Get service configuration
 
-C<service_name> - name of service
+B<Params>
+
+=for :list
+* C<service_name>
+name of service
 
 =cut
 
@@ -824,11 +915,15 @@ sub get_config {
     return $cb->($svc->{Config});
 }
 
-=method get_service_constraints ($service_name)
+=method get_service_constraints
 
 Returns the constraints for the given service.
 
-C<service_name> - Name of service
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
 
 =cut
 
@@ -848,11 +943,17 @@ sub get_service_constraints {
     return $self->call($params, $cb);
 }
 
-=method set_service_constraints ($service_name, $constraints)
+=method set_service_constraints
 
-C<service_name> - Name of service
+Specifies the constraints for the given service.
 
-C<constraints> - Service constraints
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
+* C<constraints>
+Service constraints
 
 =cut
 
@@ -875,9 +976,15 @@ sub set_service_constraints {
     return $self->call($params, $cb);
 }
 
-=method share_environment($users)
+=method share_environment
 
 Allows the given users access to the environment.
+
+B<Params>
+
+=for :list
+* C<users>
+List of users to allow access
 
 =cut
 sub share_environment {
@@ -896,9 +1003,16 @@ sub share_environment {
     return $self->call($params, $cb);
 }
 
-=method unshare_environment($users)
+=method unshare_environment
 
 Removes the given users access to the environment.
+
+B<Params>
+
+=for :list
+* C<users>
+List of users to remove access
+
 
 =cut
 sub unshare_environment {
@@ -918,11 +1032,15 @@ sub unshare_environment {
 }
 
 
-=method service_destroy ($service_name)
+=method service_destroy
 
 Destroys a service
 
-C<service_name> - name of service
+B<Params>
+
+=for :list
+* C<service_name>
+name of service
 
 =cut
 
@@ -942,11 +1060,15 @@ sub service_destroy {
     return $self->call($params, $cb);
 }
 
-=method service_expose ($service_name)
+=method service_expose
 
 Expose service
 
-C<service_name> - Name of service
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
 
 =cut
 
@@ -967,11 +1089,15 @@ sub service_expose {
 }
 
 
-=method service_unexpose ($service_name)
+=method service_unexpose
 
 Unexpose service
 
-C<service_name> - Name of service
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
 
 =cut
 
@@ -995,6 +1121,12 @@ sub service_unexpose {
 
 All possible relation names of a service
 
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
+
 =cut
 
 sub service_charm_relations {
@@ -1013,9 +1145,17 @@ sub service_charm_relations {
     return $self->call($params, $cb);
 }
 
-=method add_service_units ($service_name, $num_units)
+=method add_service_units
 
 Adds given number of units to a service
+
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
+* C<num_units>
+Number of units to add
 
 =cut
 
@@ -1040,9 +1180,17 @@ sub add_service_units {
     return $self->call($params, $cb);
 }
 
-=method add_service_unit ($service_name, $machine_spec)
+=method add_service_unit
 
 Add unit to specific machine
+
+B<Params>
+
+=for :list
+* C<service_name>
+Name of service
+* C<machine_spec>
+Machine to add unit to
 
 =cut
 
@@ -1071,9 +1219,15 @@ sub add_service_unit {
     return $self->call($params, $cb);
 }
 
-=method destroy_service_units ($unit_names)
+=method destroy_service_units
 
 Decreases number of units dedicated to a service
+
+B<Params>
+
+=for :list
+* C<unit_names>
+List of units to destroy
 
 =cut
 
@@ -1093,13 +1247,17 @@ sub destroy_service_units {
     return $self->call($params, $cb);
 }
 
-=method resolved ($unit_name, $retry)
+=method resolved
 
 Clear errors on unit
 
-C<unit_name> - id of unit (eg, mysql/0)
+B<Params>
 
-C<retry> - bool
+=for :list
+* C<unit_name>
+id of unit (eg, mysql/0)
+* C<retry>
+Boolean to force a retry
 
 =cut
 
@@ -1157,9 +1315,15 @@ sub set_annotations {
     return $self->call($params, $cb);
 }
 
-=method get_annotations ($entity, $entity_type)
+=method get_annotations
 
 Returns annotations that have been set on the given entity.
+
+B<Params>
+
+=for :list
+* C<entity>
+* C<entity_type>
 
 =cut
 
@@ -1182,12 +1346,18 @@ sub get_annotations {
     return $self->call($params, $cb);
 }
 
-=method private_address($target)
+=method private_address
 
 Get private address of machine or unit
 
   $self->private_address('1');  # get address of machine 1
   $self->private_address('mysql/0');  # get address of first unit of mysql
+
+B<Params>
+
+=for :list
+* C<target>
+Target machine
 
 =cut
 sub private_address {
@@ -1214,6 +1384,12 @@ machine, target is an id not a tag.
   $self->public_address('1');  # get address of machine 1
   $self->public_address('mysql/0');  # get address of first unit of mysql
 
+B<Params>
+
+=for :list
+* C<target>
+Target machine
+
 =cut
 sub public_address {
     my ($self, $target) = @_;
@@ -1231,9 +1407,17 @@ sub public_address {
     return $self->call($params, $cb);
 }
 
-=method service_set_yaml ($service, $yaml)
+=method service_set_yaml
 
 Sets configuration options on a service given options in YAML format.
+
+B<Params>
+
+=for :list
+* C<service>
+Service Name
+* C<yaml>
+YAML formatted string of options
 
 =cut
 sub service_set_yaml {

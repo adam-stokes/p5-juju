@@ -59,7 +59,7 @@ sub close {
     $self->conn->close;
 }
 
-=method call ($params, $cb)
+=method call
 
 Sends event to juju api server, this is the entrypoint for all api calls. If an
 B<error> occurs it will return a response object of:
@@ -76,6 +76,14 @@ Otherwise, successful queries will return:
     Response => { some_successful => 'hash' }
     RequestId => 1
   }
+
+B<Params>
+
+=for :list
+* C<params>
+Hash of request parameters
+* C<cb>
+(optional) callback for non-blocking operations
 
 =cut
 sub call {
