@@ -111,7 +111,7 @@ sub login {
 
 =method reconnect
 
-Reconnects to API server in case of timeout
+Reconnects to API server in case of timeout, this also resets the RequestId.
 
 =cut
 
@@ -520,11 +520,15 @@ kvm or lxc container type
 
 sub add_machine {
     my $self = shift;
-    my $series = shift // "trusty";
-    # Go ahead and pull this to strip off the argument list
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+    my ($series, $constraints, $machine_spec, $parent_id, $container_type) =
+      validate_pos(
+        @_,
+        {default => 'trusty'},
+        {type    => HASHREF, default => +{}},
+        0, 0, 0
+      );
 
-    my ($constraints, $machine_spec, $parent_id, $container_type) = @_;
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {
         "Series"        => $series,
         "Jobs"          => [$self->Jobs->{HostUnits}],
@@ -786,10 +790,12 @@ hash of config parameters
 =cut
 
 sub service_set {
-    my ($self, $service_name, $config) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+    my $self = shift;
+    my ($service_name, $config) =
+      validate_pos(@_, {type => SCALAR}, {type => HASHREF, optional => 1});
 
-    die "Not a hash" unless ref $config eq 'HASH';
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceSet",
@@ -798,6 +804,7 @@ sub service_set {
             "Options"     => $config
         }
     };
+
     # block
     return $self->call($params) unless $cb;
 
