@@ -1,0 +1,14 @@
+package Juju::Manual;
+
+# ABSTRACT: Juju Manual
+
+=head1 FAQ
+
+=for :list
+* What is Juju?
+Juju is a powerful service orchestration tool from Ubuntu that helps you define, configure and deploy services to any cloud quickly and easily.
+* What do the bindings do?
+This is a client library for accessing Juju's API L<http://godoc.org/github.com/juju/juju/api#Client>
+=cut
+
+1;
