@@ -85,11 +85,5 @@ dies_ok {
 }
 "should die as it doesn't run synchronously";
 
-# CHARMS ----------------------------------------------------------------------
-my $charm_url = $juju->query_cs('mysql');
-ok( defined($charm_url->{charm}->{revision}),
-    "Found charm mysql in charm store"
-);
-
 $juju->close;
 done_testing();

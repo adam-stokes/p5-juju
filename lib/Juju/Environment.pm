@@ -521,12 +521,7 @@ kvm or lxc container type
 sub add_machine {
     my $self = shift;
     my ($series, $constraints, $machine_spec, $parent_id, $container_type) =
-      validate_pos(
-        @_,
-        {default => 'trusty'},
-        {type    => HASHREF, default => +{}},
-        0, 0, 0
-      );
+      validate_pos(@_, {default => 'trusty'}, 0, 0, 0, 0);
 
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {

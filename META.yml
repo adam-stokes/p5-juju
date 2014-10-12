@@ -39,5 +39,5 @@ requires:
   strict: '0'
   warnings: '0'
 resources:
-  repository: git://github.com/battlemidget/p5-juju.git
-version: 1.5.2
+  repository: git://github.com/battlemidget/p5-juju
+version: '1.6'

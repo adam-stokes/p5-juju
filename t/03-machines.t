@@ -26,6 +26,7 @@ $juju->add_machine(
         my $val = shift->{Response};
         my $machine = $val->{Machines}->[0];
         ok(!defined($machine->{Error}), "Add machine worked.");
+        $juju->destroy_machines([$machine->{Machine}]);
     }
 );
 
