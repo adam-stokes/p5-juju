@@ -12,11 +12,11 @@ package Juju::Environment;
 
 use strict;
 use warnings;
-use HTTP::Tiny;
 use JSON::PP;
 use YAML::Tiny qw(Dump);
 use Data::Validate::Type qw(:boolean_tests);
-use Carp;
+use Params::Validate qw(:all);
+use Juju::Util;
 use parent 'Juju::RPC';
 
 =attr endpoint
@@ -53,30 +53,9 @@ use Class::Tiny qw(password is_authenticated), {
             ManageEnviron => 'JobManageEnviron',
             ManageState   => 'JobManageSate'
         };
-    }
+    },
+    util   => Juju::Util->new
 };
-
-
-=method query_cs ($charm)
-
-helper for querying charm store for charm details
-
-=cut
-
-sub query_cs {
-    my ($self,   $charm)  = @_;
-    my ($series, $_charm) = $charm =~ /^(precise|trusty)\/(\w+)/i;
-    my $cs_url = 'https://manage.jujucharms.com/api/3/charm';
-    if (!$series) {
-        $series = 'trusty';
-        $_charm = $charm;
-    }
-
-    my $composed_url = sprintf("%s/%s/%s", $cs_url, $series, $_charm);
-    my $res = HTTP::Tiny->new->get($composed_url);
-    die "Unable to query charm store\n" unless $res->{success};
-    return decode_json($res->{content});
-}
 
 
 =method _prepare_constraints ($constraints)
@@ -673,7 +652,7 @@ sub deploy {
         Request => "ServiceDeploy",
         Params  => {ServiceName => $service_name}
     };
-    my $_charm_url = $self->query_cs($charm);
+    my $_charm_url = $self->util->query_cs($charm);
     $params->{Params}->{CharmUrl} = $_charm_url->{charm}->{url};
     $num_units = 1 unless $num_units;
     $params->{Params}->{NumUnits} = $num_units;
