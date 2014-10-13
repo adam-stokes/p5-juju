@@ -17,7 +17,6 @@ use YAML::Tiny qw(Dump);
 use Data::Validate::Type qw(:boolean_tests);
 use Params::Validate qw(:all);
 use Juju::Util;
-use DDP;
 use parent 'Juju::RPC';
 
 =attr endpoint
@@ -161,7 +160,7 @@ sub environment_uuid {
 
 =method environment_unset
 
-Environment UUID from client connection
+Unset Environment settings
 
 B<Params>
 
