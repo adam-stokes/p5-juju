@@ -48,3 +48,5 @@ sub query_cs {
     die "Unable to query charm store: ".$res->{reason} unless $res->{success};
     return decode_json($res->{content});
 }
+
+1;

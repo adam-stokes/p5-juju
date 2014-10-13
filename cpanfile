@@ -1,6 +1,7 @@
 requires "AnyEvent" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
 requires "Class::Tiny" => "0";
+requires "DDP" => "0";
 requires "Data::Validate::Type" => "0";
 requires "HTTP::Tiny" => "0";
 requires "JSON::PP" => "0";

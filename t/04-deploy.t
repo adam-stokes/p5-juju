@@ -23,6 +23,30 @@ dies_ok {
 }
 'Dies if no charm or service name';
 
-ok($juju->deploy('mysql', 'trusty/mysql'), 'Deploy works');
+$juju->deploy(
+    charm        => 'mysql',
+    service_name => 'mysql',
+    cb           => sub {
+        my $val = shift;
+        ok(!defined($val->{Error}), "Deployed mysql service");
+    }
+);
+$juju->deploy(
+    charm        => 'precise/wordpress',
+    service_name => 'wordpress',
+    cb           => sub {
+        my $val = shift;
+        ok(!defined($val->{Error}), "Deployed precise/wordpress service");
+    }
+);
 
+$juju->add_relation(
+    'mysql',
+    'wordpress',
+    sub {
+        my $val = shift;
+        ok(defined($val->{Response}->{Endpoints}->{wordpress}), "Found wordpress endpoint relation");
+        ok(defined($val->{Response}->{Endpoints}->{mysql}), "Found mysql endpoint relation");
+    }
+);
 done_testing();

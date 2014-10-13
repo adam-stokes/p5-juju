@@ -1,10 +1,18 @@
 ==================================================
-Changes from 2013-10-12 00:00:00 +0000 to present.
+Changes from 2013-10-13 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.6 at 2014-10-12 23:42:07 +0000
+version 1.6 at 2014-10-13 01:02:51 +0000
 ----------------------------------------
+
+  Change: 4e91c7a1d8f2f5fef38b528b90e0fee4c1ca855f
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 19:45:46 +0000
+
+    fix add_machine validator
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
   Change: cbc4f38f320199cc5774978b89b56fa370c4e5b5
   Author: Adam Stokes <adam.stokes@ubuntu.com>

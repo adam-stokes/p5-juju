@@ -17,6 +17,7 @@ use YAML::Tiny qw(Dump);
 use Data::Validate::Type qw(:boolean_tests);
 use Params::Validate qw(:all);
 use Juju::Util;
+use DDP;
 use parent 'Juju::RPC';
 
 =attr endpoint
@@ -702,7 +703,16 @@ sub remove_relation {
 
 =method deploy
 
-Deploys a charm to service
+Deploys a charm to service, named parameters are required here:
+
+    $juju->deploy(
+        charm        => 'mysql',
+        service_name => 'mysql',
+        cb           => sub {
+            my $val = shift;
+            print Dumper($val) if defined($val->{Error});
+        }
+    );
 
 B<Params>
 
@@ -710,7 +720,7 @@ B<Params>
 * C<charm>
 charm to deploy, can be in the format of B<series/charm> if needing to specify a different series
 * C<service_name>
-name of service to set. can be same name as charm, however, recommended to pick something unique and identifiable.
+name of service to set. same name as charm
 * C<num_units>
 (optional) number of service units
 * C<config_yaml>
@@ -726,48 +736,46 @@ More information on deploying can be found by running C<juju help deploy>.
 
 sub deploy {
     my $self = shift;
-    my ($charm, $service_name) =
-      validate_pos(@_, {type => SCALAR}, {type => SCALAR});
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    # parse additional arguments
-    my ($num_units, $config_yaml, $constraints, $machine_spec) = @_;
+    my %p    = validate(
+        @_,
+        {   charm        => {type    => SCALAR},
+            service_name => {type    => SCALAR},
+            num_units    => {default => 1},
+            config_yaml  => {default => ""},
+            constraints  => {default => +{}, type => HASHREF},
+            machine_spec => {default => ""},
+            cb           => {default => undef}
+        }
+    );
 
     my $params = {
         Type    => "Client",
         Request => "ServiceDeploy",
-        Params  => {ServiceName => $service_name}
+        Params  => {ServiceName => $p{service_name}}
     };
 
     # Check for series format
-    my (@charm_args) = $charm =~ /(\w+)\/(\w+)/i;
+    my (@charm_args) = $p{charm} =~ /(\w+)\/(\w+)/i;
     my $_charm_url = undef;
     if (scalar @charm_args == 2) {
         $_charm_url = $self->util->query_cs($charm_args[1], $charm_args[0]);
     }
     else {
-        $_charm_url = $self->util->query_cs($charm);
+        $_charm_url = $self->util->query_cs($p{charm});
     }
 
-    $params->{Params}->{CharmUrl} = $_charm_url->{charm}->{url};
-    $num_units = 1 unless $num_units;
-    $params->{Params}->{NumUnits} = $num_units;
-    $params->{Params}->{ConfigYAML} =
-      defined($config_yaml) ? $config_yaml : "";
-
-    if (defined($constraints) and is_hashref($constraints)) {
-        $params->{Params}->{Constraints} =
-          $self->_prepare_constraints($constraints);
-    }
-    if ($machine_spec) {
-        $params->{Params}->{ToMachineSpec} = "$machine_spec";
-    }
+    $params->{Params}->{CharmUrl}   = $_charm_url->{charm}->{url};
+    $params->{Params}->{NumUnits}   = $p{num_units};
+    $params->{Params}->{ConfigYAML} = $p{config_yaml};
+    $params->{Params}->{Constraints} =
+      $self->_prepare_constraints($p{constraints});
+    $params->{Params}->{ToMachineSpec} = "$p{machine_spec}";
 
     # block
-    return $self->call($params) unless $cb;
+    return $self->call($params) unless $p{cb};
 
     # non-block
-    return $self->call($params, $cb);
+    return $self->call($params, $p{cb});
 }
 
 =method service_set
