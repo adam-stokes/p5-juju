@@ -49,4 +49,15 @@ $juju->add_relation(
         ok(defined($val->{Response}->{Endpoints}->{mysql}), "Found mysql endpoint relation");
     }
 );
+
+## CLEANUP
+diag("Cleaning up machines");
+my $status   = $juju->status;
+my $machines = [keys %{$status->{Response}->{Machines}}];
+foreach my $machine (@{$machines}) {
+    if ($machine != 0) {
+        $juju->destroy_machines([$machine]);
+    }
+}
+
 done_testing();

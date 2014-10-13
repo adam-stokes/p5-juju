@@ -1301,17 +1301,120 @@ sub resolved {
     return $self->call($params, $cb);
 }
 
+
 =method run
 
-Not implemented yet.
+Run the Commands specified on the machines identified through the ids
+provided in the machines, services and units slices.
+
+Required parameters B<Commands>, B<Timeout>, and at B<least one>
+C<Machine>, C<Service>, or C<Unit>.
+
+    {
+       command => "",
+       timeout => TIMEDURATION
+       machines => [MACHINE_IDS],
+       services => [SERVICES_IDS],
+       units => [UNITS_ID]
+    }
+
+Requires named parameters
+
+B<Params>
+
+=for :list
+* C<command>
+command to run
+* C<timeout>
+timeout
+* C<machines>
+(optional) List of machine ids
+* C<services>
+(optional) List of services ids
+* C<units>
+(optional) List of unit ids
+* C<cb>
+(optional) callback
 
 =cut
 
+sub run {
+    my $self = shift;
+    my %p    = validate(
+        @_,
+        {   command  => {type => SCALAR},
+            timeout  => {type => SCALAR, default => 300},
+            machines => {type => ARRAYREF, optional => 1},
+            services => {type => ARRAYREF, optional => 1, default => +[]},
+            units    => {type => ARRAYREF, optional => 1, default => +[]},
+            cb => {type => CODEREF, optional => 1}
+        }
+    );
+    my $params = {
+        Type    => "Client",
+        Request => "Run",
+        Params  => {
+            Commands => $p{command},
+            Timeout  => $p{timeout},
+            Machines => @{$p{machines}},
+            Services => @{$p{services}},
+            Units    => @{$p{units}}
+        }
+    };
+
+    # block
+    return $self->call($params) unless $p{cb};
+
+    # non-block
+    return $self->call($params, $p{cb});
+}
+
+=method run_on_all_machines
+
+Runs the command on all the machines with the specified timeout.
+
+B<Params>
+
+=for :list
+* C<command>
+command to run
+* C<timeout>
+timeout
+
+=cut
+
+sub run_on_all_machines {
+    my ($self, $command, $timeout) = @_;
+
+    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+    my $params = {
+        Type    => "Client",
+        Request => "RunOnAllMachines",
+        Params  => {
+            Commands => $command,
+            Timeout  => int($timeout)
+        }
+    };
+
+    # block
+    return $self->call($params) unless $cb;
+
+    # non-block
+    return $self->call($params, $cb);
+}
 
 =method set_annotations
 
 Set annotations on entity, valid types are C<service>, C<unit>,
 C<machine>, C<environment>
+
+B<Params>
+
+=for :list
+* C<entity>
+* C<entity_type>
+* C<annotation>
 
 =cut
 

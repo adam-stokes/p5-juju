@@ -3,8 +3,34 @@ Changes from 2013-10-13 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.6 at 2014-10-13 01:05:57 +0000
+version 1.7 at 2014-10-13 15:05:23 +0000
 ----------------------------------------
+
+  Change: 6aba87e341ae6dc7a3d478f7beb0c88b1927856d
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-13 11:02:33 +0000
+
+    add new api commands run and run_on_all_machines
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 5831690e9aaaac3810386c1b02d9ff63cd728e58
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 21:11:44 +0000
+
+    update method documentation for environment_unset
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 1.6 at 2014-10-13 01:06:16 +0000
+----------------------------------------
+
+  Change: 3b172a9319f7a53b3e1814deec080e8c7ce822a8
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 21:06:16 +0000
+
+    v1.6 
 
   Change: e2886734fd42d13fc328d4ef3ff994bb5724e277
   Author: Adam Stokes <adam.stokes@ubuntu.com>

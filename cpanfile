@@ -1,7 +1,6 @@
 requires "AnyEvent" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
 requires "Class::Tiny" => "0";
-requires "DDP" => "0";
 requires "Data::Validate::Type" => "0";
 requires "HTTP::Tiny" => "0";
 requires "JSON::PP" => "0";
@@ -12,6 +11,7 @@ requires "strict" => "0";
 requires "warnings" => "0";
 
 on 'test' => sub {
+  requires "DDP" => "0";
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
   requires "IO::Handle" => "0";

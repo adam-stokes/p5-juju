@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
+use DDP;
 
 plan skip_all =>
   'must export JUJU_PASS and JUJU_ENDPOINT to enable these tests'
@@ -26,7 +27,6 @@ $juju->add_machine(
         my $val = shift->{Response};
         my $machine = $val->{Machines}->[0];
         ok(!defined($machine->{Error}), "Add machine worked.");
-        $juju->destroy_machines([$machine->{Machine}]);
     }
 );
 

@@ -3,6 +3,7 @@ abstract: 'Perl bindings for Juju'
 author:
   - 'Adam Stokes <adamjs@cpan.org>'
 build_requires:
+  DDP: '0'
   ExtUtils::MakeMaker: '0'
   File::Spec: '0'
   IO::Handle: '0'
@@ -30,7 +31,6 @@ requires:
   AnyEvent: '0'
   AnyEvent::WebSocket::Client: '0'
   Class::Tiny: '0'
-  DDP: '0'
   Data::Validate::Type: '0'
   HTTP::Tiny: '0'
   JSON::PP: '0'
@@ -41,4 +41,4 @@ requires:
   warnings: '0'
 resources:
   repository: git://github.com/battlemidget/p5-juju
-version: '1.6'
+version: '1.7'
