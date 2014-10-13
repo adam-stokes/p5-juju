@@ -3,8 +3,20 @@ Changes from 2013-10-13 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.6 at 2014-10-13 01:02:51 +0000
+version 1.6 at 2014-10-13 01:05:57 +0000
 ----------------------------------------
+
+  Change: e2886734fd42d13fc328d4ef3ff994bb5724e277
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-12 21:03:57 +0000
+
+    extend deploy tests
+
+    * tests for relations * fix missing true return in Util :\ * fix
+    deploy issues found with unittests * add .travis.yml for CI mainly
+    useful for charmstore tests
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
   Change: 4e91c7a1d8f2f5fef38b528b90e0fee4c1ca855f
   Author: Adam Stokes <adam.stokes@ubuntu.com>
