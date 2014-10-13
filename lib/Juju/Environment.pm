@@ -670,7 +670,7 @@ sub add_relation {
     return $self->call($params, $cb);
 }
 
-=method remove_relation
+=method destroy_relation
 
 Removes relation between endpoints
 
@@ -684,7 +684,7 @@ Second unit endpoint
 
 =cut
 
-sub remove_relation {
+sub destroy_relation {
     my ($self, $endpoint_a, $endpoint_b) = @_;
     my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
     my $params = {

@@ -52,11 +52,15 @@ $juju->add_relation(
 
 ## CLEANUP
 diag("Cleaning up machines");
+$juju->destroy_relation(['wordpress', 'mysql']);
+$juju->service_destroy('wordpress');
+$juju->service_destroy('mysql');
+$juju->destroy_service_units(['wordpress/0', 'mysql/0']);
 my $status   = $juju->status;
 my $machines = [keys %{$status->{Response}->{Machines}}];
 foreach my $machine (@{$machines}) {
     if ($machine != 0) {
-        $juju->destroy_machines([$machine]);
+      ok($juju->destroy_machines([$machine]), "Destroyed machine: $machine");
     }
 }
 
