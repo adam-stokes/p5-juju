@@ -1,12 +1,13 @@
 requires "AnyEvent" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
-requires "Class::Tiny" => "0";
 requires "Data::Validate::Type" => "0";
+requires "Function::Parameters" => "1.0404";
 requires "HTTP::Tiny" => "0";
 requires "JSON::PP" => "0";
-requires "Params::Validate" => "0";
+requires "Moo" => "0";
+requires "Moo::Role" => "0";
 requires "YAML::Tiny" => "0";
-requires "parent" => "0";
+requires "namespace::clean" => "0";
 requires "strict" => "0";
 requires "warnings" => "0";
 
@@ -14,6 +15,8 @@ on 'test' => sub {
   requires "DDP" => "0";
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
+  requires "FindBin" => "0";
+  requires "Function::Parameters" => "1.0404";
   requires "IO::Handle" => "0";
   requires "IO::Socket::SSL" => "0";
   requires "IPC::Open3" => "0";
@@ -25,6 +28,7 @@ on 'test' => sub {
   requires "Test::Kwalitee" => "0";
   requires "Test::More" => "0";
   requires "Test::NoTabs" => "0";
+  requires "lib" => "0";
   requires "perl" => "5.006";
 };
 

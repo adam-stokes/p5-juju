@@ -19,12 +19,12 @@ my $juju_endpoint = $ENV{JUJU_ENDPOINT};
 my $juju = Juju->new(endpoint => $juju_endpoint, password => $juju_pass);
 $juju->login;
 
-ok($juju->add_machine());
+dies_ok {$juju->add_machine } "Dies on no params";
 
 $juju->add_machine(
-    'trusty',
+    'trusty', undef, undef, undef, undef,
     sub {
-        my $val = shift->{Response};
+        my $val     = shift->{Response};
         my $machine = $val->{Machines}->[0];
         ok(!defined($machine->{Error}), "Add machine worked.");
     }

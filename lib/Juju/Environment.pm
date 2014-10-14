@@ -6,7 +6,8 @@ package Juju::Environment;
 
   use Juju;
 
-  my $juju = Juju->new(endpoint => 'wss://localhost:17070', password => 's3cr3t');
+  my $juju =
+    Juju->new(endpoint => 'wss://localhost:17070', password => 's3cr3t');
 
 =cut
 
@@ -15,9 +16,11 @@ use warnings;
 use JSON::PP;
 use YAML::Tiny qw(Dump);
 use Data::Validate::Type qw(:boolean_tests);
-use Params::Validate qw(:all);
+use Function::Parameters qw(:strict);
 use Juju::Util;
-use parent 'Juju::RPC';
+use Moo;
+use namespace::clean;
+with 'Juju::RPC';
 
 =attr endpoint
 
@@ -43,19 +46,26 @@ Stores if user has authenticated with juju api server
 
 Supported juju jobs
 
+=attr util
+
+L<Juju::Util> wrapper
+
 =cut
 
-use Class::Tiny qw(password is_authenticated), {
-    endpoint => sub {'wss://localhost:17070'},
-    username => sub {'user-admin'},
-    Jobs     => sub {
+has password => (is => 'ro', required => 1);
+has is_authenticated => (is => 'rw', lazy => 1);
+has endpoint => (is => 'ro', default => sub {'wss://localhost:17070'});
+has username => (is => 'ro', default => sub {'user-admin'});
+has Jobs => (
+    is      => 'ro',
+    default => sub {
         {   HostUnits     => 'JobHostUnits',
             ManageEnviron => 'JobManageEnviron',
             ManageState   => 'JobManageSate'
         };
-    },
-    util   => Juju::Util->new
-};
+    }
+);
+has util => (is => 'ro', default => sub { Juju::Util->new });
 
 
 =method _prepare_constraints
@@ -70,8 +80,7 @@ hash of service constraints
 
 =cut
 
-sub _prepare_constraints {
-    my ($self, $constraints) = @_;
+method _prepare_constraints ($constraints) {
     foreach my $key (keys %{$constraints}) {
         if ($key =~ /^(cpu-cores|cpu-power|mem|root-disk)/) {
             $constraints->{k} = int($constraints->{k});
@@ -86,10 +95,7 @@ Login to juju, will die on a failed login attempt.
 
 =cut
 
-sub login {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
+method login {
     my $params = {
         "Type"      => "Admin",
         "Request"   => "Login",
@@ -108,15 +114,13 @@ sub login {
 }
 
 
-
 =method reconnect
 
 Reconnects to API server in case of timeout, this also resets the RequestId.
 
 =cut
 
-sub reconnect {
-    my $self = shift;
+method reconnect {
     $self->close;
     $self->login;
     $self->request_id = 1;
@@ -128,9 +132,7 @@ Return Juju Environment information
 
 =cut
 
-sub environment_info {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method environment_info($cb = undef) {
     my $params = {"Type" => "Client", "Request" => "EnvironmentInfo"};
 
     # block
@@ -145,9 +147,8 @@ sub environment_info {
 Environment UUID from client connection
 
 =cut
-sub environment_uuid {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method environment_uuid ($cb = undef) {
     my $params = {"Type" => "Client", "Request" => "EnvironmentUUID"};
 
     # block
@@ -169,9 +170,7 @@ B<Params>
 
 =cut
 
-sub environment_unset {
-    my ($self, $items) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method environment_unset ($items, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "EnvironmentUnset",
@@ -202,9 +201,8 @@ Distribution series (eg, trusty)
 architecture
 
 =cut
-sub find_tools {
-    my ($self, $major, $minor, $series, $arch) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method find_tools ($major, $minor, $series, $arch, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "EnvironmentUnset",
@@ -229,9 +227,8 @@ sub find_tools {
 Returns version of api server
 
 =cut
-sub agent_version {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method agent_version ($cb = undef) {
     my $params = {"Type" => "Client", "Request" => "AgentVersion"};
 
     # block
@@ -246,9 +243,8 @@ sub agent_version {
 Aborts and archives the current upgrade synchronization record, if any.
 
 =cut
-sub abort_current_upgrade {
-    my $self = shift;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method abort_current_upgrade ($cb = undef) {
     my $params = {"Type" => "Client", "Request" => "AbortCurrentUpgrade"};
 
     # block
@@ -265,11 +261,9 @@ Returns juju environment status
 
 =cut
 
-sub status {
-    my $self   = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+method status ($cb = undef) {
     my $params = {
-        "Type"   => "Client",
+        "Type"    => "Client",
         "Request" => "FullStatus"
     };
 
@@ -285,11 +279,10 @@ sub status {
 Returns network hostports for each api server
 
 =cut
-sub client_api_host_ports {
-    my $self   = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method client_api_host_ports ($cb = undef) {
     my $params = {
-        "Type"   => "Client",
+        "Type"    => "Client",
         "Request" => "APIHostPorts"
     };
 
@@ -307,9 +300,7 @@ Returns watcher
 
 =cut
 
-sub get_watcher {
-    my $self = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_watcher ($cb = undef) {
     my $params = {"Type" => "Client", "Request" => "WatchAll"};
 
     # block
@@ -330,9 +321,7 @@ C<watcher_id>
 
 =cut
 
-sub get_watched_tasks {
-    my ($self, $watcher_id) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_watched_tasks ($watcher_id, $cb = undef) {
     die "Unable to run synchronously, provide a callback" unless $cb;
 
     my $params =
@@ -355,9 +344,7 @@ url of charm
 
 =cut
 
-sub add_charm {
-    my ($self, $charm_url) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method add_charm ($charm_url, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "AddCharm",
@@ -383,9 +370,7 @@ url of charm
 
 =cut
 
-sub get_charm {
-    my ($self, $charm_url) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_charm ($charm_url, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "CharmInfo",
@@ -405,9 +390,7 @@ Get environment constraints
 
 =cut
 
-sub get_environment_constraints {
-    my $self   = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_environment_constraints ($cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "GetEnvironmentConstraints"
@@ -433,9 +416,7 @@ environment constraints
 
 =cut
 
-sub set_environment_constraints {
-    my ($self, $constraints) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method set_environment_constraints (ArrayRef $constraints, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "SetEnvironmentConstraints",
@@ -455,9 +436,7 @@ Returns all environment settings
 
 =cut
 
-sub environment_get {
-    my $self   = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+method environment_get ($cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "EnvironmentGet"
@@ -482,9 +461,7 @@ Config parameters
 
 =cut
 
-sub environment_set {
-    my ($self, $config) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method environment_set ($config, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "EnvironmentSet",
@@ -518,12 +495,7 @@ kvm or lxc container type
 
 =cut
 
-sub add_machine {
-    my $self = shift;
-    my ($series, $constraints, $machine_spec, $parent_id, $container_type) =
-      validate_pos(@_, {default => 'trusty'}, 0, 0, 0, 0);
-
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method add_machine ($series, $constraints = undef, $machine_spec = undef, $parent_id = undef, $container_type = undef, $cb = undef) {
     my $params = {
         "Series"        => $series,
         "Jobs"          => [$self->Jobs->{HostUnits}],
@@ -561,9 +533,7 @@ List of machines
 
 =cut
 
-sub add_machines {
-    my ($self, $machines) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method add_machines ($machines, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "AddMachines",
@@ -584,9 +554,7 @@ Destroys Juju environment
 
 =cut
 
-sub destroy_environment {
-    my $self   = shift;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
+method destroy_environment ($cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "DestroyEnvironment"
@@ -614,10 +582,7 @@ Force destroy
 
 =cut
 
-sub destroy_machines {
-    my ($self, $machine_ids, $force) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
+method destroy_machines ($machine_ids, $force = 0, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "DestroyMachines",
@@ -654,9 +619,7 @@ Second unit endpoint
 
 =cut
 
-sub add_relation {
-    my ($self, $endpoint_a, $endpoint_b) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method add_relation ($endpoint_a, $endpoint_b, $cb = undef) {
     my $params = {
         'Type'    => 'Client',
         'Request' => 'AddRelation',
@@ -684,9 +647,7 @@ Second unit endpoint
 
 =cut
 
-sub destroy_relation {
-    my ($self, $endpoint_a, $endpoint_b) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method destroy_relation ($endpoint_a, $endpoint_b, $cb = undef) {
     my $params = {
         'Type'    => 'Client',
         'Request' => 'DestroyRelation',
@@ -702,12 +663,16 @@ sub destroy_relation {
 
 =method deploy
 
-Deploys a charm to service, named parameters are required here:
+Deploys a charm to service
 
     $juju->deploy(
-        charm        => 'mysql',
-        service_name => 'mysql',
-        cb           => sub {
+        'mysql',
+        'mysql',
+        1,
+        undef,
+        undef,
+        undef,
+        sub {
             my $val = shift;
             print Dumper($val) if defined($val->{Error});
         }
@@ -733,48 +698,35 @@ More information on deploying can be found by running C<juju help deploy>.
 
 =cut
 
-sub deploy {
-    my $self = shift;
-    my %p    = validate(
-        @_,
-        {   charm        => {type    => SCALAR},
-            service_name => {type    => SCALAR},
-            num_units    => {default => 1},
-            config_yaml  => {default => ""},
-            constraints  => {default => +{}, type => HASHREF},
-            machine_spec => {default => ""},
-            cb           => {default => undef}
-        }
-    );
-
+method deploy ($charm, $service_name, $num_units = 1, $config_yaml = "", $constraints = "", $machine_spec = "", $cb = undef) {
     my $params = {
         Type    => "Client",
         Request => "ServiceDeploy",
-        Params  => {ServiceName => $p{service_name}}
+        Params  => {ServiceName => $service_name}
     };
 
     # Check for series format
-    my (@charm_args) = $p{charm} =~ /(\w+)\/(\w+)/i;
+    my (@charm_args) = $charm =~ /(\w+)\/(\w+)/i;
     my $_charm_url = undef;
     if (scalar @charm_args == 2) {
         $_charm_url = $self->util->query_cs($charm_args[1], $charm_args[0]);
     }
     else {
-        $_charm_url = $self->util->query_cs($p{charm});
+        $_charm_url = $self->util->query_cs($charm);
     }
 
     $params->{Params}->{CharmUrl}   = $_charm_url->{charm}->{url};
-    $params->{Params}->{NumUnits}   = $p{num_units};
-    $params->{Params}->{ConfigYAML} = $p{config_yaml};
+    $params->{Params}->{NumUnits}   = $num_units;
+    $params->{Params}->{ConfigYAML} = $config_yaml;
     $params->{Params}->{Constraints} =
-      $self->_prepare_constraints($p{constraints});
-    $params->{Params}->{ToMachineSpec} = "$p{machine_spec}";
+      $self->_prepare_constraints($constraints);
+    $params->{Params}->{ToMachineSpec} = "$machine_spec";
 
     # block
-    return $self->call($params) unless $p{cb};
+    return $self->call($params) unless $cb;
 
     # non-block
-    return $self->call($params, $p{cb});
+    return $self->call($params, $cb);
 }
 
 =method service_set
@@ -791,13 +743,7 @@ hash of config parameters
 
 =cut
 
-sub service_set {
-    my $self = shift;
-    my ($service_name, $config) =
-      validate_pos(@_, {type => SCALAR}, {type => HASHREF, optional => 1});
-
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
+method service_set ($service_name, $config = undef, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceSet",
@@ -828,18 +774,15 @@ config items to unset
 
 =cut
 
-sub unset_config {
-    my ($self, $service_name, $config_keys) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    my $params = 
-        {   "Type"    => "Client",
-            "Request" => "ServiceUnset",
-            "Params"  => {
-                "ServiceName" => $service_name,
-                "Options"     => $config_keys
-            }
-        };
+method unset_config ($service_name, $config_keys, $cb = undef) {
+    my $params = {
+        "Type"    => "Client",
+        "Request" => "ServiceUnset",
+        "Params"  => {
+            "ServiceName" => $service_name,
+            "Options"     => $config_keys
+        }
+    };
 
     # block
     return $self->call($params) unless $cb;
@@ -864,11 +807,7 @@ charm location (ie. cs:precise/wordpress)
 
 =cut
 
-sub set_charm {
-    my ($self, $service_name, $charm_url, $force) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    $force = 0 unless $force;
+method set_charm ($service_name, $charm_url, $force = 0, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceSetCharm",
@@ -897,9 +836,7 @@ B<Params>
 
 =cut
 
-sub service_get {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method service_get ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceGet",
@@ -925,10 +862,7 @@ name of service
 
 =cut
 
-sub get_config {
-    my ($self, $service_name) = @_;
-    my $cb     = ref $_[-1] eq 'CODE' ? pop : undef;
-
+method get_config ($service_name, $cb = undef) {
     my $svc = $self->service_get($service_name);
     return $svc->{Config} unless $cb;
     return $cb->($svc->{Config});
@@ -946,9 +880,7 @@ Name of service
 
 =cut
 
-sub get_service_constraints {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_service_constraints ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "GetServiceConstraints",
@@ -976,9 +908,7 @@ Service constraints
 
 =cut
 
-sub set_service_constraints {
-    my ($self, $service_name, $constraints) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method set_service_constraints ($service_name, $constraints, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "SetServiceConstraints",
@@ -1006,9 +936,8 @@ B<Params>
 List of users to allow access
 
 =cut
-sub share_environment {
-    my ($self, $users) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method share_environment ($users, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ShareEnvironment",
@@ -1034,9 +963,8 @@ List of users to remove access
 
 
 =cut
-sub unshare_environment {
-    my ($self, $users) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method unshare_environment ($users, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "UnshareEnvironment",
@@ -1063,9 +991,7 @@ name of service
 
 =cut
 
-sub service_destroy {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method service_destroy ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceDestroy",
@@ -1091,9 +1017,7 @@ Name of service
 
 =cut
 
-sub service_expose {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method service_expose ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceExpose",
@@ -1120,9 +1044,7 @@ Name of service
 
 =cut
 
-sub service_unexpose {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method service_unexpose ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceUnexpose",
@@ -1148,9 +1070,7 @@ Name of service
 
 =cut
 
-sub service_charm_relations {
-    my ($self, $service_name) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method service_charm_relations ($service_name, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "ServiceCharmRelations",
@@ -1178,11 +1098,7 @@ Number of units to add
 
 =cut
 
-sub add_service_units {
-    my ($self, $service_name, $num_units) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    $num_units = 1 unless $num_units;
+method add_service_units ($service_name, $num_units = 1, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "AddServiceUnits",
@@ -1213,11 +1129,7 @@ Machine to add unit to
 
 =cut
 
-sub add_service_unit {
-    my ($self, $service_name, $machine_spec) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    $machine_spec = 0 unless $machine_spec;
+method add_service_unit ($service_name, $machine_spec = "", $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "AddServiceUnits",
@@ -1250,9 +1162,7 @@ List of units to destroy
 
 =cut
 
-sub destroy_service_units {
-    my ($self, $unit_names) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method destroy_service_units ($unit_names, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "DestroyServiceUnits",
@@ -1280,11 +1190,7 @@ Boolean to force a retry
 
 =cut
 
-sub resolved {
-    my ($self, $unit_name, $retry) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
-    $retry = 0 unless $retry;
+method resolved ($unit_name, $retry = 0, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "Resolved",
@@ -1338,35 +1244,24 @@ timeout
 
 =cut
 
-sub run {
-    my $self = shift;
-    my %p    = validate(
-        @_,
-        {   command  => {type => SCALAR},
-            timeout  => {type => SCALAR, default => 300},
-            machines => {type => ARRAYREF, optional => 1},
-            services => {type => ARRAYREF, optional => 1, default => +[]},
-            units    => {type => ARRAYREF, optional => 1, default => +[]},
-            cb => {type => CODEREF, optional => 1}
-        }
-    );
+method run ($command, $timeout, $machines = undef, $services = undef, $units = undef, $cb = undef) {
     my $params = {
         Type    => "Client",
         Request => "Run",
         Params  => {
-            Commands => $p{command},
-            Timeout  => $p{timeout},
-            Machines => @{$p{machines}},
-            Services => @{$p{services}},
-            Units    => @{$p{units}}
+            Commands => $command,
+            Timeout  => $timeout,
+            Machines => $machines,
+            Services => $services,
+            Units    => $units
         }
     };
 
     # block
-    return $self->call($params) unless $p{cb};
+    return $self->call($params) unless $cb;
 
     # non-block
-    return $self->call($params, $p{cb});
+    return $self->call($params, $cb);
 }
 
 =method run_on_all_machines
@@ -1383,11 +1278,7 @@ timeout
 
 =cut
 
-sub run_on_all_machines {
-    my ($self, $command, $timeout) = @_;
-
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
-
+method run_on_all_machines ($command, $timeout, $cb = undef) {
     my $params = {
         Type    => "Client",
         Request => "RunOnAllMachines",
@@ -1418,9 +1309,7 @@ B<Params>
 
 =cut
 
-sub set_annotations {
-    my ($self, $entity, $entity_type, $annotation) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method set_annotations ($entity, $entity_type, $annotation, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "SetAnnotations",
@@ -1449,9 +1338,7 @@ B<Params>
 
 =cut
 
-sub get_annotations {
-    my ($self, $entity, $entity_type) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+method get_annotations ($entity, $entity_type, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "GetAnnotations",
@@ -1482,9 +1369,8 @@ B<Params>
 Target machine
 
 =cut
-sub private_address {
-    my ($self, $target) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method private_address ($target, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "PrivateAddress",
@@ -1513,9 +1399,8 @@ B<Params>
 Target machine
 
 =cut
-sub public_address {
-    my ($self, $target) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method public_address ($target, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "PublicAddress",
@@ -1542,9 +1427,8 @@ Service Name
 YAML formatted string of options
 
 =cut
-sub service_set_yaml {
-    my ($self, $service, $yaml) = @_;
-    my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+
+method service_set_yaml ($service, $yaml, $cb = undef) {
     my $params = {
         "Type"    => "Client",
         "Request" => "PublicAddress",

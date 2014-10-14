@@ -24,17 +24,17 @@ dies_ok {
 'Dies if no charm or service name';
 
 $juju->deploy(
-    charm        => 'mysql',
-    service_name => 'mysql',
-    cb           => sub {
+    'mysql', 'mysql', undef, undef, undef,
+    sub {
         my $val = shift;
         ok(!defined($val->{Error}), "Deployed mysql service");
     }
 );
 $juju->deploy(
-    charm        => 'precise/wordpress',
-    service_name => 'wordpress',
-    cb           => sub {
+    'precise/wordpress',
+    'wordpress',
+    undef, undef, undef,
+    sub {
         my $val = shift;
         ok(!defined($val->{Error}), "Deployed precise/wordpress service");
     }
@@ -52,7 +52,7 @@ $juju->add_relation(
 
 ## CLEANUP
 diag("Cleaning up machines");
-$juju->destroy_relation(['wordpress', 'mysql']);
+$juju->destroy_relation('wordpress', 'mysql');
 $juju->service_destroy('wordpress');
 $juju->service_destroy('mysql');
 $juju->destroy_service_units(['wordpress/0', 'mysql/0']);

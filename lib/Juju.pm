@@ -14,7 +14,8 @@ https://juju.ubuntu.com
 
 use strict;
 use warnings;
-
-use parent 'Juju::Environment';
+use Moo;
+use namespace::clean;
+extends 'Juju::Environment';
 
 1;
