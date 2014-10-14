@@ -13,7 +13,7 @@ use warnings;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
 use JSON::PP;
-use Function::Parameters qw(:strict);
+use Method::Signatures;
 use Moo::Role;
 
 =attr conn
@@ -35,7 +35,8 @@ has is_connected => (is => 'rw', lazy => 1);
 has done         => (is => 'rw', lazy => 1);
 has request_id   => (is => 'rw', lazy => 1, default => 1);
 
-method BUILD {
+sub BUILD {
+    my $self = shift;
     my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
     $self->conn($client->connect($self->endpoint)->recv);
     $self->is_connected(1);

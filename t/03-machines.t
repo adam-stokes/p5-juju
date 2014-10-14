@@ -22,7 +22,7 @@ $juju->login;
 dies_ok {$juju->add_machine } "Dies on no params";
 
 $juju->add_machine(
-    'trusty', undef, undef, undef, undef,
+    'trusty', {}, undef, undef, undef,
     sub {
         my $val     = shift->{Response};
         my $machine = $val->{Machines}->[0];

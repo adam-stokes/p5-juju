@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Juju;
-use DDP;
+use Data::Dumper::Concise;
 
 my $client = Juju->new(
     endpoint => $ENV{JUJU_ENDPOINT},
@@ -11,10 +11,10 @@ my $client = Juju->new(
 );
 $client->login;
 my $status = $client->status;
-p $status;
+warn Dumper($status);
 
 my $machines = [keys %{$status->{Response}->{Machines}}];
-p $machines;
+warn Dumper($machines);
 
 # Easily destroy machines
 # foreach my $machine (@{$machines}) {

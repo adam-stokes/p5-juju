@@ -3,8 +3,32 @@ Changes from 2013-10-14 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.8 at 2014-10-14 01:42:24 +0000
+version 1.9 at 2014-10-14 18:10:21 +0000
 ----------------------------------------
+
+  Change: 94bb6f39309d421923d8433e99c33225d0c4765c
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-14 14:09:58 +0000
+
+    2 new api calls, provisioning_script and retry_provisioning 
+
+  Change: 0ba868dfa7b65e23bc3d83ce58217d455820b625
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-13 23:24:24 +0000
+
+    set perl version
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+----------------------------------------
+version 1.8 at 2014-10-14 01:42:55 +0000
+----------------------------------------
+
+  Change: 6697b4c79f4745894fe3b5d49ce591fbd179d2ea
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-13 21:42:55 +0000
+
+    v1.8 
 
   Change: 5d44ecf2df898179061472e5ba243727d2445a28
   Author: Adam Stokes <adam.stokes@ubuntu.com>

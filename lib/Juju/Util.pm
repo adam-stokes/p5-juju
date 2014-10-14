@@ -14,7 +14,7 @@ use strict;
 use warnings;
 use HTTP::Tiny;
 use JSON::PP;
-use Function::Parameters qw(:strict);
+use Method::Signatures;
 use Moo;
 use namespace::clean;
 
