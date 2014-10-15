@@ -1473,7 +1473,7 @@ YAML formatted string of options
 method service_set_yaml (Str $service, Str $yaml, $cb = undef) {
     my $params = {
         "Type"    => "Client",
-        "Request" => "PublicAddress",
+        "Request" => "ServiceSetYAML",
         "Params"  => {
             "ServiceName" => $service,
             "Config"      => Dump($yaml)
