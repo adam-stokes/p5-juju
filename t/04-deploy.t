@@ -24,7 +24,7 @@ dies_ok {
 'Dies if no charm or service name';
 
 $juju->deploy(
-    'mysql', 'mysql', undef, undef, undef,
+    'mysql', 'mysql', 1, "", {}, "",
     sub {
         my $val = shift;
         ok(!defined($val->{Error}), "Deployed mysql service");
@@ -33,7 +33,7 @@ $juju->deploy(
 $juju->deploy(
     'precise/wordpress',
     'wordpress',
-    undef, undef, undef,
+    1, "", {}, "",
     sub {
         my $val = shift;
         ok(!defined($val->{Error}), "Deployed precise/wordpress service");
