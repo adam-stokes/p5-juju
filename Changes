@@ -3,14 +3,14 @@ Changes from 2013-10-25 00:00:00 +0000 to present.
 ==================================================
 
 --------------------------------------------
-version 2.001_1 at 2014-10-25 02:56:18 +0000
+version 2.001_1 at 2014-10-25 02:56:51 +0000
 --------------------------------------------
 
-  Change: 759d52b51aebcbac2f7bb0f63ea07000bbe62313
+  Change: 0a5a8babad47fd5e36173c9d1c2fe53dc469256b
   Author: Adam Stokes <adam.stokes@ubuntu.com>
-  Date : 2014-10-24 22:53:33 +0000
+  Date : 2014-10-24 22:56:35 +0000
 
-    incorporate Moose
+    add type checks to query charmstore, use moose
 
     Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
 
