@@ -8,13 +8,11 @@ utilized by the exposed API.
 
 =cut
 
-use strict;
-use warnings;
+use Moose::Role;
 use AnyEvent;
 use AnyEvent::WebSocket::Client;
 use JSON::PP;
-use Method::Signatures;
-use Moo::Role;
+use Function::Parameters;
 
 =attr conn
 
@@ -29,14 +27,13 @@ An incremented ID based on how many requests performed on the connection.
 Check if a websocket connection exists
 
 =cut
-has conn         => (is => 'rw', lazy => 1);
-has result       => (is => 'rw', lazy => 1);
-has is_connected => (is => 'rw', lazy => 1);
-has done         => (is => 'rw', lazy => 1);
-has request_id   => (is => 'rw', lazy => 1, default => 1);
+has conn         => (is => 'rw');
+has result       => (is => 'rw');
+has is_connected => (is => 'rw');
+has done         => (is => 'rw');
+has request_id   => (is => 'rw', isa => 'Int', default => 1);
 
-sub BUILD {
-    my $self = shift;
+method BUILD {
     my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
     $self->conn($client->connect($self->endpoint)->recv);
     $self->is_connected(1);

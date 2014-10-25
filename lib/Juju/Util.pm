@@ -10,15 +10,11 @@ package Juju::Util;
 
 =cut
 
-use strict;
-use warnings;
+use Moose;
 use HTTP::Tiny;
 use JSON::PP;
-use Method::Signatures;
-use Moo;
-use namespace::clean;
-
-has series => (is => 'ro', default => sub { qr/precise|trusty|utopic/ });
+use Function::Parameters;
+use namespace::autoclean;
 
 =method query_cs
 
@@ -34,7 +30,7 @@ name of charm to query
 
 =cut
 
-method query_cs($charm, $series = "trusty") {
+method query_cs(Str $charm, Str $series = "trusty") {
     my $cs_url = 'https://manage.jujucharms.com/api/3/charm';
 
     my $composed_url = sprintf("%s/%s/%s", $cs_url, $series, $charm);
@@ -43,4 +39,5 @@ method query_cs($charm, $series = "trusty") {
     return decode_json($res->{content});
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

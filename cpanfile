@@ -1,15 +1,12 @@
 requires "AnyEvent" => "0";
 requires "AnyEvent::WebSocket::Client" => "0";
+requires "Function::Parameters" => "0";
 requires "HTTP::Tiny" => "0";
 requires "JSON::PP" => "0";
-requires "Method::Signatures" => "0";
-requires "Moo" => "0";
-requires "Moo::Role" => "0";
-requires "Types::Standard" => "0";
+requires "Moose" => "0";
+requires "Moose::Role" => "0";
 requires "YAML::Tiny" => "0";
-requires "namespace::clean" => "0";
-requires "strict" => "0";
-requires "warnings" => "0";
+requires "namespace::autoclean" => "0";
 
 on 'test' => sub {
   requires "DDP" => "0";
@@ -29,6 +26,8 @@ on 'test' => sub {
   requires "Test::NoTabs" => "0";
   requires "lib" => "0";
   requires "perl" => "5.006";
+  requires "strict" => "0";
+  requires "warnings" => "0";
 };
 
 on 'test' => sub {

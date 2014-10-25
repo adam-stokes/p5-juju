@@ -12,10 +12,8 @@ https://juju.ubuntu.com
 
 =cut
 
-use strict;
-use warnings;
-use Moo;
-use namespace::clean;
+use Moose;
+use namespace::autoclean;
 extends 'Juju::Environment';
 
 1;

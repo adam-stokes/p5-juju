@@ -20,10 +20,12 @@ build_requires:
   Test::NoTabs: '0'
   lib: '0'
   perl: '5.006'
+  strict: '0'
+  warnings: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 5.020, CPAN::Meta::Converter version 2.142690'
+generated_by: 'Dist::Zilla version 5.021, CPAN::Meta::Converter version 2.142690'
 license: mit
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -32,16 +34,15 @@ name: Juju
 requires:
   AnyEvent: '0'
   AnyEvent::WebSocket::Client: '0'
+  Function::Parameters: '0'
   HTTP::Tiny: '0'
   JSON::PP: '0'
-  Method::Signatures: '0'
-  Moo: '0'
-  Moo::Role: '0'
-  Types::Standard: '0'
+  Moose: '0'
+  Moose::Role: '0'
   YAML::Tiny: '0'
-  namespace::clean: '0'
-  strict: '0'
-  warnings: '0'
+  namespace::autoclean: '0'
 resources:
-  repository: git://github.com/battlemidget/p5-juju
-version: '2.0'
+  homepage: https://github.com/battlemidget/p5-juju
+  repository: https://github.com/battlemidget/p5-juju.git
+version: 2.001_1
+x_authority: cpan:ADAMJS
