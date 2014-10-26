@@ -39,10 +39,11 @@ requires:
   JSON::PP: '0'
   Moose: '0'
   Moose::Role: '0'
+  Throwable::Error: '0'
   YAML::Tiny: '0'
   namespace::autoclean: '0'
 resources:
   homepage: https://github.com/battlemidget/p5-juju
   repository: https://github.com/battlemidget/p5-juju.git
-version: 2.001_1
+version: '2.002'
 x_authority: cpan:ADAMJS

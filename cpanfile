@@ -5,6 +5,7 @@ requires "HTTP::Tiny" => "0";
 requires "JSON::PP" => "0";
 requires "Moose" => "0";
 requires "Moose::Role" => "0";
+requires "Throwable::Error" => "0";
 requires "YAML::Tiny" => "0";
 requires "namespace::autoclean" => "0";
 

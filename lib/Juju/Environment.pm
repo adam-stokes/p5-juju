@@ -16,6 +16,7 @@ use JSON::PP;
 use YAML::Tiny qw(Dump);
 use Function::Parameters;
 use Juju::Util;
+use Juju::Error::Environment;
 use namespace::autoclean;
 with 'Juju::RPC';
 
@@ -119,7 +120,12 @@ method login {
 
     # block
     my $res = $self->call($params);
-    die $res->{Error} if defined($res->{Error});
+    if (defined($res->{Error})) {
+        Juju::Error::Environment->throw(
+            error_message => 'Failed to login: ' . $res->{Error},
+            method_name   => 'login'
+        );
+    }
     $self->is_authenticated(1)
       unless !defined($res->{Response}->{EnvironTag});
 }

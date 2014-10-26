@@ -1,4 +1,5 @@
 package Juju::RPC;
+
 # ABSTRACT: RPC Class
 
 =head1 DESCRIPTION

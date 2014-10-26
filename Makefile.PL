@@ -28,6 +28,7 @@ my %WriteMakefileArgs = (
     "JSON::PP" => 0,
     "Moose" => 0,
     "Moose::Role" => 0,
+    "Throwable::Error" => 0,
     "YAML::Tiny" => 0,
     "namespace::autoclean" => 0
   },
@@ -51,7 +52,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "2.001_1",
+  "VERSION" => "2.002",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -81,6 +82,7 @@ my %FallbackPrereqs = (
   "Test::Kwalitee" => 0,
   "Test::More" => 0,
   "Test::NoTabs" => 0,
+  "Throwable::Error" => 0,
   "YAML::Tiny" => 0,
   "lib" => 0,
   "namespace::autoclean" => 0,

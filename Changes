@@ -1,10 +1,24 @@
 ==================================================
-Changes from 2013-10-25 00:00:00 +0000 to present.
+Changes from 2013-10-26 00:00:00 +0000 to present.
 ==================================================
 
---------------------------------------------
-version 2.001_1 at 2014-10-25 02:56:51 +0000
---------------------------------------------
+------------------------------------------
+version 2.002 at 2014-10-26 03:49:38 +0000
+------------------------------------------
+
+  Change: a80078500938015cfb2b4e67d6120d301bbfe690
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-25 23:49:30 +0000
+
+    Add exception class
+
+    Signed-off-by: Adam Stokes <adam.stokes@ubuntu.com> 
+
+  Change: 0d63bd90c35577b41306e16b25144c2ebae0dd00
+  Author: Adam Stokes <adam.stokes@ubuntu.com>
+  Date : 2014-10-24 22:57:05 +0000
+
+    v2.001_1 
 
   Change: 0a5a8babad47fd5e36173c9d1c2fe53dc469256b
   Author: Adam Stokes <adam.stokes@ubuntu.com>
