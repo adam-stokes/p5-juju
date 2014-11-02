@@ -26,9 +26,10 @@ has status_code => (
 );
 
 has error_message => (
-    is       => 'ro',
-    isa      => 'Str',
-    required => 1
+    is            => 'ro',
+    isa           => 'Str',
+    required      => 1,
+    documentation => 'An error response string'
 );
 
 has method_name => (
