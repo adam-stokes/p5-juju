@@ -25,7 +25,7 @@ dies_ok { $util->query_cs } 'dies on no charm defined';
 dies_ok { $util->query_cs('wordpress', 'lucid') }
 'dies on invalid series specified';
 
-dies_ok { $util->query_cs('wordpress', 'trusty') }
+dies_ok { $util->query_cs('shouldnotexist', 'trusty') }
 'dies on no charm found for series';
 
 done_testing();
